@@ -40,14 +40,14 @@ TempoClock.default.tempo = ~bpm/120;
 
 (
 //CHANGE DRUM PATTERN
-~numDrums = 2;
+~numDrums = 1;
 Pdefn(\kickDur,~drums[0][~numDrums]);
 Pdefn(\hiHatDur, ~drums[1][~numDrums]);
 )
 
 (
 //Change pattern
-~numPattern = 0;
+~numPattern = 1;
 
 	Pdefn(\patternNote,Pseq(~patterns[~numPattern][0],inf));
 	Pdefn(\patternDur,Pseq(~patterns[~numPattern][1],inf));
