@@ -119,13 +119,13 @@ void setAccMag(float x, float y, float z) {
   }
   accMag/=accMagList.size();
   if (accMag>10 && accMag<15) {
-    valueToSend = 0.25;
+    valueToSend = 0.5;
     println(accMag);
   } else if (accMag>15 && accMag<35) {
-    valueToSend = 0.125;
+    valueToSend = 0.25;
     println(accMag);
   } else if (accMag>35) {
-    valueToSend = 0.08333333333333333333333333333333333333333333333;
+    valueToSend = 0.125;
     println(accMag);
   } else {
     valueToSend = 0.0;
