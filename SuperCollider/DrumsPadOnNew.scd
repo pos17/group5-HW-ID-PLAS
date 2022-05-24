@@ -321,7 +321,8 @@ SynthDef(\bass, { |outbus, midinote = 42|
 
 
 (
-OSCdef.new(\toggle,
+
+OSCdef.new(\get_Arp,
 	{
 		arg msg, time, addr, port;
 		postln(msg[1]);
@@ -336,4 +337,15 @@ OSCdef.new(\toggle,
 	"/processing/SCControls/ArpONOFF"
 );
 )
-
+(
+OSCdef.new(\get_Changes,
+	{
+		arg msg, time, addr, port;
+		postln(msg[1]);
+		~numDrums = msg[1];
+		Pdefn(\kickDur,~drums[0][~numDrums]);
+		Pdefn(\hiHatDur, ~drums[1][~numDrums]);
+	},
+	"/processing/SCControls/ChangeThings"
+);
+)

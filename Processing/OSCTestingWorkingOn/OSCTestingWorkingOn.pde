@@ -16,12 +16,18 @@ import java.io.IOException;
 float accMagTime = millis();
 float accMagDelay = 500;
 
+float shakeResetTime = millis();
+float shakeResetDelay = 5000;
 
 /* acceleration magnitude handling components */
 float accX=0;
 float accY=0;
 float accZ=0;
 FloatList accMagList = new FloatList();
+
+/* Handling handshake rate*/
+int shakesIter = 0;
+int shakesLimit = 5;
 
 
 OscP5 oscP5;
@@ -39,6 +45,7 @@ void setup() {
 }
 
 void draw() {
+  update();
 }
 
 
@@ -72,14 +79,28 @@ void oscEvent(OscMessage theOscMessage) {
       setAccMag(accX, accY, accZ);
       return;
     }
-  } else if (theOscMessage.checkAddrPattern("/test")==true) {
+  } else if (theOscMessage.checkAddrPattern("/arduino/handshake/val")==true) {
     /* check if the typetag is the right one. */
     if (theOscMessage.checkTypetag("i")) {
       /* parse theOscMessage and extract the values from the osc message arguments. */
       float firstValue = theOscMessage.get(0).intValue();  // get the first osc argument
-      println("shake value:");
-      println(firstValue);
-      return;
+      shakesIter += firstValue;
+      println("ARRIVA OSC");
+      /*
+      if (shakesIter>=shakesLimit) {
+       shakesIter = 0;
+       println("SENDING TO SC");
+       OscMessage myMessage = new OscMessage("/processing/SCControls/ArpONOFF");
+       myMessage.add(valueToSend);
+       // send the message
+       
+       println(valueToSend);
+       oscP5.send(myMessage, myRemoteLocation);
+       
+       }
+       */
+       return;
+      
     }
   }
 }
@@ -100,10 +121,10 @@ void setAccMag(float x, float y, float z) {
   if (accMag>10 && accMag<15) {
     valueToSend = 0.25;
     println(accMag);
-  } else if(accMag>15 && accMag<18){
+  } else if (accMag>15 && accMag<18) {
     valueToSend = 0.125;
     println(accMag);
-  } else if(accMag>19){
+  } else if (accMag>19) {
     valueToSend = 0.0625;
     println(accMag);
   } else {
@@ -117,5 +138,26 @@ void setAccMag(float x, float y, float z) {
     println(valueToSend);
     oscP5.send(myMessage, myRemoteLocation);
     accMagTime=millis();
+  }
+}
+
+void update() {
+  if (millis()-shakeResetTime>shakeResetDelay) {
+    int value = 0;
+    if (shakesIter <=5) {
+      value = 0;
+    } else if (shakesIter <=10) {
+      value = 1;
+    } else {
+      value = 2;
+    }
+    OscMessage myMessage = new OscMessage("/processing/SCControls/ChangeThings");
+    myMessage.add(value);
+    // send the message
+    println("SENDING OSC MESSAGE TO SC");
+    println(value);
+    oscP5.send(myMessage, myRemoteLocation);
+    shakeResetTime = millis();
+    shakesIter = 0;
   }
 }
