@@ -17,7 +17,7 @@ float accMagTime = millis();
 float accMagDelay = 500;
 
 float shakeResetTime = millis();
-float shakeResetDelay = 5000;
+float shakeResetDelay = 1500;
 
 /* acceleration magnitude handling components */
 float accX=0;
@@ -27,7 +27,7 @@ FloatList accMagList = new FloatList();
 
 /* Handling handshake rate*/
 int shakesIter = 0;
-int shakesLimit = 5;
+int shakesLimit = 3;
 
 
 OscP5 oscP5;
@@ -121,11 +121,11 @@ void setAccMag(float x, float y, float z) {
   if (accMag>10 && accMag<15) {
     valueToSend = 0.25;
     println(accMag);
-  } else if (accMag>15 && accMag<18) {
+  } else if (accMag>15 && accMag<35) {
     valueToSend = 0.125;
     println(accMag);
-  } else if (accMag>19) {
-    valueToSend = 0.0625;
+  } else if (accMag>35) {
+    valueToSend = 0.08333333333333333333333333333333333333333333333;
     println(accMag);
   } else {
     valueToSend = 0.0;
@@ -135,6 +135,7 @@ void setAccMag(float x, float y, float z) {
     OscMessage myMessage = new OscMessage("/processing/SCControls/ArpONOFF");
     myMessage.add(valueToSend); /* add an int to the osc message */
     /* send the message */
+    println("sendingArp");
     println(valueToSend);
     oscP5.send(myMessage, myRemoteLocation);
     accMagTime=millis();
@@ -144,9 +145,9 @@ void setAccMag(float x, float y, float z) {
 void update() {
   if (millis()-shakeResetTime>shakeResetDelay) {
     int value = 0;
-    if (shakesIter <=5) {
+    if (shakesIter <=1) {
       value = 0;
-    } else if (shakesIter <=10) {
+    } else if (shakesIter <=6) {
       value = 1;
     } else {
       value = 2;
