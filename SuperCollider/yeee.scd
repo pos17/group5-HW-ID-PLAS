@@ -1,7 +1,13 @@
 (
+Server.default.options.inDevice_("AUKEY EP-T28");
+Server.default.options.outDevice_("AUKEY EP-T28");
+
+)
+
+(
 //LOAD PATTERNS
 ~patterns = [
-	[[0,36,36,39,39,38,34,31],[1/8,1/4,3/8,1/4,1/4,3/8,1/8,1/4]],
+	[[0,36,36,39 ,39,38,34,31],[1/8,1/4,3/8,1/4,1/4,3/8,1/8,1/4]],
 
 	[[44,43,43,39,39,39,36,36,36,36,36,36,36],[1/4,1/2,1/4,1/4,1/4,1/4,3/8,3/8,3/8,3/8,1/4,1/4,1/4]],
 
@@ -21,16 +27,12 @@
 ~arpSpeed = 1/8;
 ~kickDur = 1;
 ~hiHatDur = 1/2;
+~numDrums = 1;
+~numPattern = 1;
+~arp =0.0;
 )
 
 
-
-(
-//ARP SPEED
-~arpSpeed = 1/16;
-
-	Pdefn(\arpSpeed,~arpSpeed);
-)
 
 (
 //CHANGE BPM
@@ -39,23 +41,20 @@ TempoClock.default.tempo = ~bpm/120;
 )
 
 (
-//CHANGE DRUM PATTERN
-~numDrums = 1;
+~f = {
+	Pdefn(\arp,~arp);
+	Pdefn(\arpSpeed,~arpSpeed);
+Pdefn(\patternNote,Pseq(~patterns[~numPattern][0],inf));
+Pdefn(\patternDur,Pseq(~patterns[~numPattern][1],inf));
 Pdefn(\kickDur,~drums[0][~numDrums]);
 Pdefn(\hiHatDur, ~drums[1][~numDrums]);
-)
+	"cazzi".postln;
+	TempoClock.default.tempo*2.wait;
+};
 
-(
-//Change pattern
-~numPattern = 1;
+t = Task({ ~f.loop });
+t.start;
 
-	Pdefn(\patternNote,Pseq(~patterns[~numPattern][0],inf));
-	Pdefn(\patternDur,Pseq(~patterns[~numPattern][1],inf));
-)
-
-
-
-(
 SynthDef("kick", {
 	arg out = 0, amp = 1, sinfreq = 60, glissf = 0.9, att = 0.01, rel = 0.45, pan = 0, env, snd, ramp, envNoise;
 	// env = Env.perc(att, rel, amp).kr(doneAction:2);
@@ -263,7 +262,7 @@ SynthDef(\bass, { |outbus, midinote = 42|
 	],
 	inf),
 	\dur, Pdefn(\arpSpeed),
-	\amp, 0.6,
+	\amp, Pdefn(\arp),
 	\mod, 0.2
 ).play;
 
@@ -281,7 +280,7 @@ SynthDef(\bass, { |outbus, midinote = 42|
 	\att, 0.01,
 	\rel, Pkey(\dur)+0.01,
 	\hifreq, 5000,
-    \amp, 0.8
+    \amp, 1,
 ).play;
 
 ~pKick = Pbind(
@@ -292,7 +291,7 @@ SynthDef(\bass, { |outbus, midinote = 42|
 	\rel, 0.22,
 	\sinfreq, 60,
 	\glissf, 0.9,
-	\amp, 1,
+	\amp, 0.8,
 ).play;
 
 ~pSnare = Pbind(
@@ -302,7 +301,7 @@ SynthDef(\bass, { |outbus, midinote = 42|
 	\rel, 0.4,
 	\sinfreq, 180,
 	\ffreq, 500,
-	\amp, 1
+	\amp, 1,
 
 ).play;
 
@@ -314,7 +313,7 @@ SynthDef(\bass, { |outbus, midinote = 42|
 	\rel, 0.1,
 	\ffreq, 11000,
 	\pan, 0,
-	\amp, 0.3
+	\amp, 0.2
 ).play;
 
 )
@@ -327,10 +326,10 @@ OSCdef.new(\get_Arp,
 		arg msg, time, addr, port;
 		postln(msg[1]);
 		if(msg[1]<=0.0, {
-			Pdefn(\arp,msg[1]);
+			~arp= 0.0;
 		},{
-			Pdefn(\arp,0.8*1);
-			Pdefn(\arpSpeed,msg[1]);
+			~arp = 1;
+			~arpSpeed=msg[1];
 		})
 
 	},
@@ -343,8 +342,6 @@ OSCdef.new(\get_Changes,
 		arg msg, time, addr, port;
 		postln(msg[1]);
 		~numDrums = msg[1];
-		Pdefn(\kickDur,~drums[0][~numDrums]);
-		Pdefn(\hiHatDur, ~drums[1][~numDrums]);
 	},
 	"/processing/SCControls/ChangeThings"
 );
