@@ -18,7 +18,7 @@ float a = 70;
 float b = a/2;
 float c =0;
 float freq = 0.2;
-int amplitude =20, numLines=60, speedBall=1, randomness=0;
+int amplitude =20, numLines=80, speedBall=1, randomness=0;
 float t0=0;
 
 float a0=200, b0=a0/2;
@@ -32,7 +32,7 @@ void setup() {
   //size(1920, 1200, P3D);
   //noFill();
   colorMode(HSB);
-  //lights();
+  lights();
   //sphereDetail(100);
 
   elipse = new myLine(0, 0, 0, numLines, randomness);
@@ -41,7 +41,7 @@ void setup() {
   
   sf = new SoundFile(this, "SaponeLiquido.mp3");
   //sf.rate();
-  sf.loop();
+  //sf.loop();
   amp = new Amplitude(this);
   amp.input(sf);
   
@@ -54,14 +54,10 @@ void setup() {
   w3 = new ExpSine(height/6*3, 50, freq, amplitude/2);
   w4 = new ExpSine(height/6*4, 50, freq*2, amplitude);
   w5 = new ExpSine(height/6*5, 50, freq, amplitude*2);
-  
-  elipse.setRandomness(abs(speedBall-3)*3);
-  vert.setRandomness(abs(speedBall-3)*3);
-  hor.setRandomness(abs(speedBall-3)*3);
 }
 
 void draw() {
-  float ampValue = amp.analyze();
+  //float ampValue = amp.analyze();
   background(0);
 
   //if (ampValue>0.7) t0=millis();
@@ -77,6 +73,10 @@ void draw() {
   w5.calcWave(time2, t0);
     
   w1.setColor(color(frameCount%255, 255, 255));
+  w2.setColor(color((frameCount/2)%255, 255, 255));
+  w3.setColor(color((frameCount/3)%255, 255, 255));
+  w4.setColor(color((frameCount/4)%255, 255, 255));
+  w5.setColor(color((frameCount/5)%255, 255, 255));
     
   w1.update();
   w2.update();
@@ -94,17 +94,25 @@ void draw() {
   popMatrix();
 
   translate(width/2, height/2, 0);
+  //pointLight(0, 200, 255, 400, 0, -500);
+  spotLight(255,255,255, 
+            0,0,-(a0+b0+300), 
+            0, 0, 1, 
+            PI/2, 1);
+  
   rotateY(radians(angleH));
-  //pointLight(0, 200, 255, 0, 0, 3*(a0+b0));
+  
   //pointLight(127, 175, 155, 0, 0, -3*(a0+b0));
   //pointLight(200, 175, 155, 3*(a0+b0), 0, 0);
   //pointLight(50, 175, 155, -3*(a0+b0), 0, 0);
 
   //setA(a0+5*sin(c));
-  setA(a0+50*ampValue);
-  elipse.changeRadius(a+b);
-  hor.changeRadius(a+b);
-  vert.changeRadius(a+b);
+  a = a0;
+  b = b0;
+  //setA(a0+50*ampValue);
+  //elipse.changeRadius(a+b);
+  //hor.changeRadius(a+b);
+  //vert.changeRadius(a+b);
 
   //BASKET LINE
   x = a*cos(radians(t)) + b*cos(3*radians(t));
@@ -127,7 +135,7 @@ void draw() {
   }
   noStroke();
   //fill(127+127*ampValue, 255);
-  fill(0);
+  fill(255);
   sphere(a+b-8);
 
   elipse.drawLine();
@@ -138,7 +146,7 @@ void draw() {
   angleH += 0.7;
   //a = 100+50*sin(c/10);
   //t+=0.1;
-  t = millis()/5*speedBall;
+  t = millis()/10*speedBall;
   c+=0.1;
   time2=millis();
 
@@ -152,21 +160,21 @@ void setA(float aA) {
 }
 
 /* SPEED in range(1, 3)*/
-void setSpeed(int speed) {
-  numLines = int(50/speed);
-  elipse.setNumLines(numLines);
-  vert.setNumLines(numLines);
-  hor.setNumLines(numLines);
+//void setSpeed(int speed) {
+//  numLines = int(50/speed);
+//  elipse.setNumLines(numLines);
+//  vert.setNumLines(numLines);
+//  hor.setNumLines(numLines);
 
-  elipse.setRandomness(abs(speed-3)*3);
-  vert.setRandomness(abs(speed-3)*3);
-  hor.setRandomness(abs(speed-3)*3);
-  speedBall = speed;
-}
+//  elipse.setRandomness(abs(speed-3)*3);
+//  vert.setRandomness(abs(speed-3)*3);
+//  hor.setRandomness(abs(speed-3)*3);
+//  speedBall = speed;
+//}
 
-void mouseClicked() {
-  speedBall++;
-  if (speedBall==4) speedBall=1;
-  setSpeed(speedBall);
-  println(speedBall);
-}
+//void mouseClicked() {
+//  speedBall++;
+//  if (speedBall==4) speedBall=1;
+//  setSpeed(speedBall);
+//  println(speedBall);
+//}
