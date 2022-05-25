@@ -56,6 +56,9 @@ void setup() {
   w3 = new ExpSine(height/6*3, 50, freq, amplitude/2);
   w4 = new ExpSine(height/6*4, 50, freq*2, amplitude);
   w5 = new ExpSine(height/6*5, 50, freq, amplitude*2);
+  
+  Toolbar tb = new Toolbar();
+ 
 }
 
 void draw() {
