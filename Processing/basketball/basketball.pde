@@ -18,7 +18,7 @@ float a = 70;
 float b = a/2;
 float c =0;
 float freq = 0.2;
-int amplitude =20, numLines=80, speedBall=1, randomness=0;
+int amplitude =20, numLines=200, speedBall=1, randomness=0;
 float t0=0;
 
 float a0=200, b0=a0/2;
@@ -41,7 +41,7 @@ void setup() {
   
   sf = new SoundFile(this, "SaponeLiquido.mp3");
   //sf.rate();
-  //sf.loop();
+  sf.loop();
   amp = new Amplitude(this);
   amp.input(sf);
   
@@ -57,7 +57,7 @@ void setup() {
 }
 
 void draw() {
-  //float ampValue = amp.analyze();
+  float ampValue = amp.analyze();
   background(0);
 
   //if (ampValue>0.7) t0=millis();
@@ -107,12 +107,12 @@ void draw() {
   //pointLight(50, 175, 155, -3*(a0+b0), 0, 0);
 
   //setA(a0+5*sin(c));
-  a = a0;
-  b = b0;
-  //setA(a0+50*ampValue);
-  //elipse.changeRadius(a+b);
-  //hor.changeRadius(a+b);
-  //vert.changeRadius(a+b);
+  //a = a0;
+  //b = b0;
+  setA(a0+50*ampValue);
+  elipse.changeRadius(a+b);
+  hor.changeRadius(a+b);
+  vert.changeRadius(a+b);
 
   //BASKET LINE
   x = a*cos(radians(t)) + b*cos(3*radians(t));
