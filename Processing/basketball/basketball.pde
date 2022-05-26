@@ -1,5 +1,6 @@
 import processing.sound.*;
 
+
 int angle=0;
 myLine elipse, vert, hor;
 ExpSine w1, w2, w3, w4, w5;
@@ -9,6 +10,8 @@ float z = 0;
 float yV, zV, zH, xH;
 PVector vec;
 float angleH=0;
+float ballVel =1;
+
 float angleV=0;
 float radius=10;
 float time=0, time2=0;
@@ -18,7 +21,7 @@ float a = 70;
 float b = a/2;
 float c =0;
 float freq = 0.2;
-int amplitude =20, numLines=60, speedBall=1, randomness=0;
+int amplitude =20, numLines=200, speedBall=1, randomness=0;
 float t0=0;
 
 float a0=200, b0=a0/2;
@@ -27,26 +30,25 @@ Amplitude amp;
 SoundFile sf;
 BeatDetector bd;
 
+
 void setup() {
-   fullScreen(P3D);
+  fullScreen(P3D);
   //size(1920, 1200, P3D);
   //noFill();
   colorMode(HSB);
   lights();
   //sphereDetail(100);
-  
-  numLines = int(width/30);
-  
+
   elipse = new myLine(0, 0, 0, numLines, randomness);
   vert = new myLine(0, 0, 0, numLines, randomness);
   hor = new myLine(0, 0, 0, numLines, randomness);
-  
+
   //sf = new SoundFile(this, "SaponeLiquido.mp3");
   //sf.rate();
   //sf.loop();
   //amp = new Amplitude(this);
   //amp.input(sf);
-  
+
   //bd = new BeatDetector(this);
   //bd.input(sf);
   //bd.sensitivity(300);
@@ -56,19 +58,19 @@ void setup() {
   w3 = new ExpSine(height/6*3, 50, freq, amplitude/2);
   w4 = new ExpSine(height/6*4, 50, freq*2, amplitude);
   w5 = new ExpSine(height/6*5, 50, freq, amplitude*2);
+
+  setupOSC();
+
   
-  Toolbar tb = new Toolbar();
- 
 }
 
 void draw() {
   //float ampValue = amp.analyze();
   background(0);
-  frameRate(60);
 
   //if (ampValue>0.7) t0=millis();
   //if (bd.isBeat()) t0=millis();
-  
+
   //stroke(255);
   //line(width/2, 0, width/2, height);
   pushMatrix();
@@ -77,13 +79,13 @@ void draw() {
   w3.calcWave(time2, t0);
   w4.calcWave(time2, t0);
   w5.calcWave(time2, t0);
-    
+
   w1.setColor(color(frameCount%255, 255, 255));
   w2.setColor(color((frameCount/2)%255, 255, 255));
   w3.setColor(color((frameCount/3)%255, 255, 255));
   w4.setColor(color((frameCount/4)%255, 255, 255));
   w5.setColor(color((frameCount/5)%255, 255, 255));
-    
+
   w1.update();
   w2.update();
   w3.update();
@@ -101,13 +103,13 @@ void draw() {
 
   translate(width/2, height/2, 0);
   //pointLight(0, 200, 255, 400, 0, -500);
-  spotLight(255,255,255, 
-            0,0,-(a0+b0+300), 
-            0, 0, 1, 
-            PI/2, 1);
-  
+  spotLight(255, 255, 255,
+    0, 0, -(a0+b0+300),
+    0, 0, 1,
+    PI/2, 1);
+
   rotateY(radians(angleH));
-  
+
   //pointLight(127, 175, 155, 0, 0, -3*(a0+b0));
   //pointLight(200, 175, 155, 3*(a0+b0), 0, 0);
   //pointLight(50, 175, 155, -3*(a0+b0), 0, 0);
@@ -149,14 +151,14 @@ void draw() {
   vert.drawLine();
   hor.drawLine();
 
-  angleH += 0.7;
+  angleH += (0.7*ballVel);
   //a = 100+50*sin(c/10);
   //t+=0.1;
   t = millis()/10*speedBall;
   c+=0.1;
   time2=millis();
 
-  
+
   //setSpeed(1);
 }
 

@@ -1,3 +1,5 @@
+
+
 /*
   UDP OSC sender
   Works with the MKR1010 and Nano 33 IoT
@@ -12,59 +14,235 @@
   created 21 Nov 2019
   by Tom Igoe
 */
+#include <Arduino.h>
+#include <Vector.h>
 #include <SPI.h>
 #include <WiFiNINA.h>
 #include <WiFiUdp.h>
 #include <OSCMessage.h>
+
 #include "arduino_secrets.h"
 
-WiFiUDP Udp;                 // instance of UDP library
-const int remotePort = 8000; // port to which you want to send
+#include <utility/wifi_drv.h>
 
-//fill in the IP address you want to send to:
-char remoteAddress[] = "192.168.1.18";
+WiFiUDP Udp;                 // instance of UDP library
+
+//DEFINING PINS WITH USER-FRIENDLY NAMES
+const int shakePin = A3;
+const int heartPin =  A1;
+
+//value of shake
+int shakeState = 0;
+bool shakeActive = false;
+
+
 int counter = 0;
-byte midimsg[] = {0x90, 0x45, 0x65};
+
+//DEFINING DELAYS
+const int BPDELAY = 2000;
+unsigned long bpTime = millis();
+
+unsigned long hsTime = millis();
+
+unsigned long hsSendOSCTime = millis();
+const int HS_SEND_OSC_DELAY = 500;
+
+
+
+//BLOODPRESSURE
+float bpMean = 0;
+int numOfElements;
+
+void readyFeedback() {
+  const int BLDL = 200;
+  // when connected to net the system gives feedback blinking led GREEN RED BLUE AND THREE GREEN
+  WiFiDrv::analogWrite(25, 255);
+  WiFiDrv::analogWrite(26, 0);
+  WiFiDrv::analogWrite(27, 0);
+  delay(BLDL);
+  WiFiDrv::analogWrite(25, 0);
+  WiFiDrv::analogWrite(26, 0);
+  WiFiDrv::analogWrite(27, 0);
+  delay(BLDL);
+  WiFiDrv::analogWrite(25, 0);
+  WiFiDrv::analogWrite(26, 255);
+  WiFiDrv::analogWrite(27, 0);
+  delay(BLDL);
+  WiFiDrv::analogWrite(25, 0);
+  WiFiDrv::analogWrite(26, 0);
+  WiFiDrv::analogWrite(27, 0);
+  delay(BLDL);
+  WiFiDrv::analogWrite(25, 0);
+  WiFiDrv::analogWrite(26, 0);
+  WiFiDrv::analogWrite(27, 255);
+  delay(BLDL);
+  WiFiDrv::analogWrite(25, 0);
+  WiFiDrv::analogWrite(26, 0);
+  WiFiDrv::analogWrite(27, 0);
+  delay(BLDL);
+
+  for (int i = 0; i < 3; ++i) {
+    WiFiDrv::analogWrite(25, 0);
+    WiFiDrv::analogWrite(26, 255);
+    WiFiDrv::analogWrite(27, 0);
+    delay(BLDL);
+    WiFiDrv::analogWrite(25, 0);
+    WiFiDrv::analogWrite(26, 0);
+    WiFiDrv::analogWrite(27, 0);
+    delay(BLDL);
+
+  }
+}
 
 void setup() {
-  Serial.begin(9600);
+
+  //PINMODE SETUP FOR EMBEDDED LED ON THE ARDUINO
+
+  WiFiDrv::pinMode(25, OUTPUT); //define green pin
+  WiFiDrv::pinMode(26, OUTPUT); //define red pin
+  WiFiDrv::pinMode(27, OUTPUT); //define blue pin
+
+  //PINMODE SETUP FOR INPUT PINS
+  pinMode(shakePin, INPUT);
+  pinMode(heartPin, INPUT);
+  pinMode(A3, INPUT);
+
+  //INITIALIZING SERIALUSB DEBUG
+  SerialUSB.begin(9600);
+  //while (!SerialUSB) {};
+
+  //INITIALIZING WIFI CONNECTION
   //   while you're not connected to a WiFi AP,
   while ( WiFi.status() != WL_CONNECTED) {
-    Serial.print("Attempting to connect to Network named: ");
-    Serial.println (SECRET_SSID);           // print the network name (SSID)
-    WiFi.begin(SECRET_SSID, SECRET_PASS);   // try to connect
-    delay(2000);
+    SerialUSB.print("Attempting to connect to Network named: ");
+    SerialUSB.println (SECRET_SSID);           // print the network name (SSID)
+    WiFi.begin(SECRET_SSID, SECRET_PASS);  // try to connect
+    WiFiDrv::analogWrite(25, 255);
+    WiFiDrv::analogWrite(26, 0);
+    WiFiDrv::analogWrite(27, 255);
+    delay(1000);
+    WiFiDrv::analogWrite(25, 0);
+    WiFiDrv::analogWrite(26, 0);
+    WiFiDrv::analogWrite(27, 0);
+    delay(1000);
   }
 
   // When you're connected, print out the device's network status:
   IPAddress ip = WiFi.localIP();
-  Serial.print("IP Address: ");
-  Serial.println(ip);
+  SerialUSB.print("IP Address: ");
+  SerialUSB.println(ip);
   Udp.begin(remotePort);
+  // when connected to net the system gives feedback blinking led GREEN RED BLUE AND THREE GREEN
+  readyFeedback();
+
 }
 
 void loop() {
-  // once every three seconds:
-  if (millis() % 1000 < 3) {
-    int sensor = analogRead(A0);
-    if (counter % 2 != 0) {
-
-      midimsg[0] = map(sensor, 0, 1023, 30, 90);
+  checkShakeInput();
+  checkBloodPressure();
+  /*
+    if(millis()-hsTime>1000/SAMP_FREQ){
+    checkShakeInput();
+    hsTime=millis();
     }
-    midimsg[2] = counter % 2;
-    counter++;
-    Serial.print(String(sensor) + "  ");
+
+    if(millis()-hsSendOSCTime>HS_SEND_OSC_DELAY){
+    //sendHsOsc();
+
+    int numOfShake =0;
+    for(int i = 0; i< ELEMENT_COUNT_MAX; ++i)  {
+        if(hsRate[i]==1) {
+          numOfShake++;
+        }
+      }
+      //SerialUSB.print("HSRATE ARRAY:");
+      //for(int i = 0; i < ELEMENT_COUNT_MAX; i++) {
+      //  Serial.println(hsRate[i]);
+      //}
+      SerialUSB.print("NUM OF SHAKES:");
+      SerialUSB.println(numOfShake);
+      hsSendOSCTime=millis();
+    }
+  */
+
+  /*
+    if (millis() % 1000 < 3) {
+
+    Serial.print(String(buttonVal1) + "  ");
     //the message wants an OSC address as first argument
-    OSCMessage msg("/midi/note/0");
-    for (int b = 0; b < sizeof(midimsg); b++) {
+    OSCMessage msg("/test");
+
+      for (int b = 0; b < sizeof(midimsg); b++) {
       msg.add(midimsg[b]);
       Serial.print(midimsg[b], HEX);
       Serial.print(" ");
-    }
-    Serial.println();
+      }
+
+    msg.add(buttonVal1);
+
+    Serial.println("sending OSC");
     Udp.beginPacket(remoteAddress, remotePort);
     msg.send(Udp); // send the bytes to the SLIP stream
     Udp.endPacket(); // mark the end of the OSC Packet
     msg.empty(); // free space occupied by message
+    }
+  */
+}
+
+
+void checkShakeInput() {
+  shakeState = analogRead(shakePin);
+  if (shakeState <= 600) {
+    shakeState = analogRead(shakePin);
+    delay(5);
+    if (shakeState <= 600 && !shakeActive) {
+      shakeActive = true;
+      //DO SOMETHING
+      OSCMessage msg("/arduino/handshake/val");
+      msg.add(1);
+      SerialUSB.println("sending OSC HS Rate");
+      SerialUSB.println(1);
+      Udp.beginPacket(remoteAddress, remotePort);
+      msg.send(Udp); // send the bytes to the SLIP stream
+      Udp.endPacket(); // mark the end of the OSC Packet
+      msg.empty(); // free space occupied by message
+    }
+  } else {
+    shakeActive = false;
+  }
+}
+/*
+  void sendHsOsc() {
+  OSCMessage msg("/arduino/handshake/val");
+  msg.add(1);
+  SerialUSB.println("sending OSC HS Rate");
+  SerialUSB.println(numOfShake);
+  Udp.beginPacket(remoteAddress, remotePort);
+  msg.send(Udp); // send the bytes to the SLIP stream
+  Udp.endPacket(); // mark the end of the OSC Packet
+  msg.empty(); // free space occupied by message
+  }
+*/
+void checkBloodPressure() {
+  float bloodPress = analogRead(heartPin);
+  SerialUSB.println(bloodPress);
+  bpMean += bloodPress;
+  numOfElements++;
+  //SerialUSB.println(bpMean);
+  if (millis() - bpTime > BPDELAY) {
+    bpMean /= numOfElements;
+    //DO SOMETHING
+    OSCMessage msg("/arduino/BloodPressure/val");
+    SerialUSB.println("BPMEAN");
+    SerialUSB.println(bpMean);
+    
+    msg.add(bpMean);
+    Udp.beginPacket(remoteAddress, remotePort);
+    msg.send(Udp); // send the bytes to the SLIP stream
+    Udp.endPacket(); // mark the end of the OSC Packet
+    msg.empty(); // free space occupied by message
+    bpTime = millis();
+    bpMean=0;
+    numOfElements = 0;
   }
 }
