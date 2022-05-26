@@ -1,3 +1,4 @@
+class Toolbar{
   int margin = 40;
   int barX = margin;
   int barY = margin;

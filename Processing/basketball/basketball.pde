@@ -1,4 +1,6 @@
 import processing.sound.*;
+import controlP5.*;
+
 
 int angle=0;
 myLine elipse, vert, hor;
@@ -18,8 +20,10 @@ float a = 70;
 float b = a/2;
 float c =0;
 float freq = 0.2;
-int amplitude =20, numLines=60, speedBall=1, randomness=0;
+int amplitude =20, numLines=80, speedBall=1, randomness=0;
 float t0=0;
+
+boolean mainWindow=true;
 
 float a0=200, b0=a0/2;
 
@@ -27,26 +31,25 @@ Amplitude amp;
 SoundFile sf;
 BeatDetector bd;
 
+ControlP5 cp5;
+ButtonBar bar;
+
+Ball ball = new Ball();
+
 void setup() {
-   fullScreen(P3D);
-  //size(1920, 1200, P3D);
-  //noFill();
+  fullScreen(P3D);
   colorMode(HSB);
   lights();
-  //sphereDetail(100);
-  
-  numLines = int(width/30);
-  
-  elipse = new myLine(0, 0, 0, numLines, randomness);
-  vert = new myLine(0, 0, 0, numLines, randomness);
-  hor = new myLine(0, 0, 0, numLines, randomness);
-  
+
+  cp5 = new ControlP5(this);
+
+
   //sf = new SoundFile(this, "SaponeLiquido.mp3");
   //sf.rate();
   //sf.loop();
   //amp = new Amplitude(this);
   //amp.input(sf);
-  
+
   //bd = new BeatDetector(this);
   //bd.input(sf);
   //bd.sensitivity(300);
@@ -56,9 +59,15 @@ void setup() {
   w3 = new ExpSine(height/6*3, 50, freq, amplitude/2);
   w4 = new ExpSine(height/6*4, 50, freq*2, amplitude);
   w5 = new ExpSine(height/6*5, 50, freq, amplitude*2);
+
+  bar = cp5.addButtonBar("bar")
+    .setPosition(width/6, height/8*7)
+    .setSize(width/3*2, height/8)
+    .addItems(split("bpm scale sensors", " "));
+    
+  bar.getValueLabel().setFont(createFont("Arial",60));
   
-  Toolbar tb = new Toolbar();
- 
+  ball.initBall(100);
 }
 
 void draw() {
@@ -68,96 +77,11 @@ void draw() {
 
   //if (ampValue>0.7) t0=millis();
   //if (bd.isBeat()) t0=millis();
-  
-  //stroke(255);
-  //line(width/2, 0, width/2, height);
-  pushMatrix();
-  w1.calcWave(time2, t0);
-  w2.calcWave(time2, t0);
-  w3.calcWave(time2, t0);
-  w4.calcWave(time2, t0);
-  w5.calcWave(time2, t0);
-    
-  w1.setColor(color(frameCount%255, 255, 255));
-  w2.setColor(color((frameCount/2)%255, 255, 255));
-  w3.setColor(color((frameCount/3)%255, 255, 255));
-  w4.setColor(color((frameCount/4)%255, 255, 255));
-  w5.setColor(color((frameCount/5)%255, 255, 255));
-    
-  w1.update();
-  w2.update();
-  w3.update();
-  w4.update();
-  w5.update();
 
-  loadPixels();
-  for (int j=0; j<height; j++) {
-    for (int i=0; i<width/2; i++) {
-      pixels[(width-1-i)+j*width] = pixels[i+j*width];
-    }
-  }
-  updatePixels();
-  popMatrix();
+  if (mainWindow) drawMainWindow();
+  else drawSensorWindow();
 
-  translate(width/2, height/2, 0);
-  //pointLight(0, 200, 255, 400, 0, -500);
-  spotLight(255,255,255, 
-            0,0,-(a0+b0+300), 
-            0, 0, 1, 
-            PI/2, 1);
-  
-  rotateY(radians(angleH));
-  
-  //pointLight(127, 175, 155, 0, 0, -3*(a0+b0));
-  //pointLight(200, 175, 155, 3*(a0+b0), 0, 0);
-  //pointLight(50, 175, 155, -3*(a0+b0), 0, 0);
 
-  //setA(a0+5*sin(c));
-  a = a0;
-  b = b0;
-  //setA(a0+50*ampValue);
-  //elipse.changeRadius(a+b);
-  //hor.changeRadius(a+b);
-  //vert.changeRadius(a+b);
-
-  //BASKET LINE
-  x = a*cos(radians(t)) + b*cos(3*radians(t));
-  y = a*sin(radians(t)) - b*sin(3*radians(t));
-  z = 2*sqrt(a*b)*sin(2*radians(t));
-
-  // VERTICAL LINE
-  zV = (a+b)*cos(radians(t));
-  yV = (a+b)*sin(radians(t));
-
-  // HORIZONTAL LINE
-  xH = (a+b)*cos(radians(t));
-  zH = (a+b)*sin(radians(t));
-
-  if ((millis()-time) > delay) {
-    elipse.update(x, y, z);
-    vert.update(0, yV, zV);
-    hor.update(xH, 0, zH);
-    time = millis();
-  }
-  noStroke();
-  //fill(127+127*ampValue, 255);
-  fill(255);
-  sphere(a+b-8);
-
-  elipse.drawLine();
-  rotateZ(radians(45));
-  vert.drawLine();
-  hor.drawLine();
-
-  angleH += 0.7;
-  //a = 100+50*sin(c/10);
-  //t+=0.1;
-  t = millis()/10*speedBall;
-  c+=0.1;
-  time2=millis();
-
-  
-  //setSpeed(1);
 }
 
 void setA(float aA) {
@@ -183,4 +107,47 @@ void setA(float aA) {
 //  if (speedBall==4) speedBall=1;
 //  setSpeed(speedBall);
 //  println(speedBall);
-//}
+//}4
+
+void mousePressed(){
+  //t0=millis();
+  mainWindow = !mainWindow;
+  //speedBall++;
+  //if (speedBall==4) speedBall=1;
+  //ball.setSpeed(speedBall%4);
+}
+
+void drawMainWindow(){
+    pushMatrix();
+  w1.calcWave(time2, t0);
+  w2.calcWave(time2, t0);
+  w3.calcWave(time2, t0);
+  w4.calcWave(time2, t0);
+  w5.calcWave(time2, t0);
+
+  w1.setColor(color(frameCount%255, 255, 255));
+  w2.setColor(color((frameCount/2)%255, 255, 255));
+  w3.setColor(color((frameCount/3)%255, 255, 255));
+  w4.setColor(color((frameCount/4)%255, 255, 255));
+  w5.setColor(color((frameCount/5)%255, 255, 255));
+
+  w1.update();
+  w2.update();
+  w3.update();
+  w4.update();
+  w5.update();
+
+  loadPixels();
+  for (int j=0; j<height; j++) {
+    for (int i=0; i<width/2; i++) {
+      pixels[(width-1-i)+j*width] = pixels[i+j*width];
+    }
+  }
+  updatePixels();
+  popMatrix();
+
+  ball.drawBall();
+  time2=millis();
+}
+
+void drawSensorWindow(){}
