@@ -111,7 +111,7 @@ void setA(float aA) {
 
 void mousePressed(){
   //t0=millis();
-  mainWindow = !mainWindow;
+  //mainWindow = !mainWindow;
   //speedBall++;
   //if (speedBall==4) speedBall=1;
   //ball.setSpeed(speedBall%4);
