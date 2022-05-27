@@ -23,10 +23,11 @@ float c =0;
 float freq = 0.2;
 int amplitude =20, numLines=80, speedBall=1, randomness=0;
 float t0=0;
-int bpm = 100;
+int bpm0 = 100, bpm;
+String whatScale;
 
-boolean mainWindow=true;
-boolean bpmSliderVisible=false;
+boolean mainWindow = true;
+boolean bpmSliderVisible = false;
 
 float a0=200, b0=a0/2;
 
@@ -40,6 +41,8 @@ Slider bpmSlider;
 CheckBox checkbox;
 ScrollableList scale;
 Group buttons;
+
+Plot sens1, sens2, sens3;
 
 Ball ball = new Ball();
 
@@ -91,8 +94,8 @@ void setup() {
     .setPosition(width/6, (height/8*7)-55)
     .setSize(width/9*2, 50)
     .setRange(80, 150)
-    .setValue(bpm)
-    .bringToFront()
+    .setValue(bpm0)
+    //.bringToFront()
     .hide()
     .setGroup(buttons)
     ;
@@ -106,13 +109,14 @@ void setup() {
     .setPosition(width/9*2+width/6, height/8*6)
     //.setPosition(0, 0)
     .setSize(width/9*2, height/8)
-    .setBarHeight(height/8/3)
     .setItemHeight(height/8/3)
     .addItems(scales)
+    .setValue(0)
     .setType(0)
     .setOpen(true)
     .hide()
     .setLabelVisible(false)
+    .setBarVisible(false)
     .setGroup(buttons)
     ;
   scale.getValueLabel()
@@ -123,12 +127,17 @@ void setup() {
 
   // BALL
   ball.initBall(80, height/6);
+  
+  sens1 = new Plot("sens1", width/5*3-50, height/5);
+  sens2 = new Plot("sens2", width/5*3-50, height/5);
+  sens3 = new Plot("sens3", width/5*3-50, height/5);
+
+  frameRate(30);
 }
 
 void draw() {
   //float ampValue = amp.analyze();
   background(0);
-  frameRate(25);
 
   //if (ampValue>0.7) t0=millis();
   //if (bd.isBeat()) t0=millis();
@@ -179,10 +188,26 @@ void drawMainWindow() {
   time2=millis();
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
+  
 }
 
 void drawSensorWindow() {
   hint(ENABLE_DEPTH_TEST);
+
+  textFont(createFont("Arial", 50));
+  text("SENS 1", 50, height/4-50);
+  text("SENS 2", 50, height/2-50);
+  text("SENS 3", 50, height/4*3-50);
+  
+  
+  sens1.init(250, height/4-150);
+  sens2.init(250, height/2-150);
+  sens3.init(250, height/4*3-150);
+
+  sens1.update(sin(radians(frameCount))*50);
+  sens2.update(sin(radians(10*frameCount))*30);
+  sens3.update(sin(radians(20*frameCount))*40);
+  
   pushMatrix();
   translate(width-width/6, height/2);
   ball.setA0(120);
@@ -195,4 +220,13 @@ void checkBox(float []a) {
   bpmSlider.setVisible(a[0]==1);
   scale.setVisible(a[1]==1);
   mainWindow = a[2]==0;
+  if (a[2]==1) sens1.init(0, 0);
+}
+
+void bpmSlider(int value) {
+  bpm = value;
+}
+
+void scales(int n) {
+  whatScale = cp5.get(ScrollableList.class, "scales").getItem(n).get("text").toString();
 }
