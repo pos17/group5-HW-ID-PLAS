@@ -1,5 +1,6 @@
 import processing.sound.*;
 import controlP5.*;
+import java.util.*;
 
 
 int angle=0;
@@ -22,8 +23,10 @@ float c =0;
 float freq = 0.2;
 int amplitude =20, numLines=80, speedBall=1, randomness=0;
 float t0=0;
+int bpm = 100;
 
 boolean mainWindow=true;
+boolean bpmSliderVisible=false;
 
 float a0=200, b0=a0/2;
 
@@ -33,6 +36,10 @@ BeatDetector bd;
 
 ControlP5 cp5;
 ButtonBar bar;
+Slider bpmSlider;
+CheckBox checkbox;
+ScrollableList scale;
+Group buttons;
 
 Ball ball = new Ball();
 
@@ -42,7 +49,7 @@ void setup() {
   lights();
 
   cp5 = new ControlP5(this);
-
+  buttons = cp5.addGroup("button menu");
 
   //sf = new SoundFile(this, "SaponeLiquido.mp3");
   //sf.rate();
@@ -60,65 +67,86 @@ void setup() {
   w4 = new ExpSine(height/6*4, 50, freq*2, amplitude);
   w5 = new ExpSine(height/6*5, 50, freq, amplitude*2);
 
-  bar = cp5.addButtonBar("bar")
+  // CHECKBOX
+  checkbox = cp5.addCheckBox("checkBox")
     .setPosition(width/6, height/8*7)
-    .setSize(width/3*2, height/8)
-    .addItems(split("bpm scale sensors", " "));
-    
-  bar.getValueLabel().setFont(createFont("Arial",60));
-  
-  ball.initBall(100);
+    .setSize(width/9*2, height/8)
+    .setItemsPerRow(3)
+    .setSpacingColumn(0)
+    .addItem("bpm", 0)
+    .addItem("scale", 0)
+    .addItem("sens", 0)
+    .deactivateAll()
+    .setGroup(buttons)
+    ;
+  for (int i=0; i<checkbox.getItems().size(); i++) {
+    checkbox.getItem(i)
+      .getCaptionLabel()
+      .setFont(createFont("Arial", height/18))
+      .align(ControlP5.CENTER, ControlP5.CENTER);
+  }
+
+  // SLIDER BPM
+  bpmSlider = cp5.addSlider("bpmSlider")
+    .setPosition(width/6, (height/8*7)-55)
+    .setSize(width/9*2, 50)
+    .setRange(80, 150)
+    .setValue(bpm)
+    .bringToFront()
+    .hide()
+    .setGroup(buttons)
+    ;
+  bpmSlider.getCaptionLabel()
+    .align(ControlP5.RIGHT, ControlP5.BOTTOM)
+    .setPadding(10, 10);
+
+  // SCROLLABLE LIST
+  List scales = Arrays.asList("C", "D", "E", "F", "G", "A", "B");
+  scale = cp5.addScrollableList("scales")
+    .setPosition(width/9*2+width/6, height/8*6)
+    //.setPosition(0, 0)
+    .setSize(width/9*2, height/8)
+    .setBarHeight(height/8/3)
+    .setItemHeight(height/8/3)
+    .addItems(scales)
+    .setType(0)
+    .setOpen(true)
+    .hide()
+    .setLabelVisible(false)
+    .setGroup(buttons)
+    ;
+  scale.getValueLabel()
+    .setFont(createFont("Arial", height/50))
+    .align(ControlP5.CENTER, ControlP5.CENTER);
+  scale.getCaptionLabel()
+    .setFont(createFont("Arial", height/50));
+
+  // BALL
+  ball.initBall(80, height/6);
 }
 
 void draw() {
   //float ampValue = amp.analyze();
   background(0);
-  frameRate(60);
+  frameRate(25);
 
   //if (ampValue>0.7) t0=millis();
   //if (bd.isBeat()) t0=millis();
 
   if (mainWindow) drawMainWindow();
   else drawSensorWindow();
-
-
 }
 
-void setA(float aA) {
-  a = aA;
-  b= a/1.5;
+
+
+void mousePressed() {
 }
 
-/* SPEED in range(1, 3)*/
-//void setSpeed(int speed) {
-//  numLines = int(50/speed);
-//  elipse.setNumLines(numLines);
-//  vert.setNumLines(numLines);
-//  hor.setNumLines(numLines);
-
-//  elipse.setRandomness(abs(speed-3)*3);
-//  vert.setRandomness(abs(speed-3)*3);
-//  hor.setRandomness(abs(speed-3)*3);
-//  speedBall = speed;
-//}
-
-//void mouseClicked() {
-//  speedBall++;
-//  if (speedBall==4) speedBall=1;
-//  setSpeed(speedBall);
-//  println(speedBall);
-//}4
-
-void mousePressed(){
-  //t0=millis();
-  //mainWindow = !mainWindow;
-  //speedBall++;
-  //if (speedBall==4) speedBall=1;
-  //ball.setSpeed(speedBall%4);
-}
-
-void drawMainWindow(){
-    pushMatrix();
+void drawMainWindow() {
+  hint(ENABLE_DEPTH_TEST);
+  pushMatrix();
+  ball.setA0(200);
+  pushMatrix();
   w1.calcWave(time2, t0);
   w2.calcWave(time2, t0);
   w3.calcWave(time2, t0);
@@ -145,9 +173,26 @@ void drawMainWindow(){
   }
   updatePixels();
   popMatrix();
+  translate(width/2, height/2, 0);
 
   ball.drawBall();
   time2=millis();
+  popMatrix();
+  hint(DISABLE_DEPTH_TEST);
 }
 
-void drawSensorWindow(){}
+void drawSensorWindow() {
+  hint(ENABLE_DEPTH_TEST);
+  pushMatrix();
+  translate(width-width/6, height/2);
+  ball.setA0(120);
+  ball.drawBall();
+  popMatrix();
+  hint(DISABLE_DEPTH_TEST);
+}
+
+void checkBox(float []a) {
+  bpmSlider.setVisible(a[0]==1);
+  scale.setVisible(a[1]==1);
+  mainWindow = a[2]==0;
+}
