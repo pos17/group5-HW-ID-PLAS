@@ -43,7 +43,7 @@ ButtonBar bar;
 Slider bpmSlider;
 CheckBox checkbox;
 ScrollableList scale;
-Group buttons;
+controlP5.Group buttons;
 
 Plot sens1, sens2, sens3;
 
