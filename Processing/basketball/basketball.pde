@@ -3,7 +3,6 @@ import controlP5.*;
 import java.util.*;
 
 
-
 int angle=0;
 myLine elipse, vert, hor;
 ExpSine w1, w2, w3, w4, w5;
@@ -13,8 +12,6 @@ float z = 0;
 float yV, zV, zH, xH;
 PVector vec;
 float angleH=0;
-float ballVel =1;
-
 float angleV=0;
 float radius=10;
 float time=0, time2=0;
@@ -24,7 +21,7 @@ float a = 70;
 float b = a/2;
 float c =0;
 float freq = 0.2;
-int amplitude =20, numLines=200, speedBall=1, randomness=0;
+int amplitude =20, numLines=80, speedBall=1, randomness=0;
 float t0=0;
 int bpm0 = 100, bpm;
 String whatScale;
@@ -60,19 +57,8 @@ void setup() {
   //sf = new SoundFile(this, "SaponeLiquido.mp3");
   //sf.rate();
   //sf.loop();
-  
-  
-  //AUDIO INPUT
-  Sound s = new Sound(this);
-  Sound.list();
-  s.inputDevice(14);
-
-  // Now get the first audio input channel from that sound device (ids again start at 0)
-  AudioIn in = new AudioIn(this, 0);
-  
-  //AMPLITUDE ANALYZER
-  amp = new Amplitude(this);
-  amp.input(in); //INPUT
+  //amp = new Amplitude(this);
+  //amp.input(sf);
 
   //bd = new BeatDetector(this);
   //bd.input(sf);
@@ -150,7 +136,7 @@ void setup() {
 }
 
 void draw() {
-
+  //float ampValue = amp.analyze();
   background(0);
 
   //if (ampValue>0.7) t0=millis();
@@ -198,7 +184,7 @@ void drawMainWindow() {
   popMatrix();
   translate(width/2, height/2, 0);
 
-  ball.drawBall(ampValue);
+  ball.drawBall();
   time2=millis();
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
