@@ -1,4 +1,5 @@
-(
+ServerOptions.outDevices;
+Server.default.options.device = "Dispositivo combinato"
 //LOAD PATTERNS
 ~scale = 10;
 ~patterns = [
@@ -328,10 +329,10 @@ SynthDef(\bass, { |outbus, midinote = 42|
 	\amp, 0.2
 ).play;
 
-)
 
 
-(
+
+
 
 OSCdef.new(\get_Arp,
 	{
@@ -347,8 +348,8 @@ OSCdef.new(\get_Arp,
 	},
 	"/processing/SCControls/ArpONOFF"
 );
-)
-(
+
+
 OSCdef.new(\get_Changes,
 	{
 		arg msg, time, addr, port;
@@ -357,9 +358,9 @@ OSCdef.new(\get_Changes,
 	},
 	"/processing/SCControls/ChangeThings"
 );
-)
 
-(
+
+
 OSCdef.new(\get_Pattern_changes,
 	{
 		arg msg, time, addr, port;

@@ -163,6 +163,7 @@ void oscEvent(OscMessage theOscMessage) {
 
 
 void setAccMag(float x, float y, float z) {
+  println("accMag");
   float valueToSend =0.0;
   float accMag = sqrt(pow(x, 2)+pow(y, 2)+pow(z, 2));
   accMagList.append(accMag);
@@ -173,19 +174,21 @@ void setAccMag(float x, float y, float z) {
   for (int i =0; i<accMagList.size(); ++i) {
     accMag += accMagList.get(i);
   }
-  accMag/=accMagList.size();
-  ballVel= accMag/2; 
-  
+  accMag /= accMagList.size();
   if (accMag>5 && accMag<13) {
+    ball.setSpeed(1);
     valueToSend = 0.5;
     println(accMag);
   } else if (accMag>=13 && accMag<30) {
+    ball.setSpeed(2);
     valueToSend = 0.25;
     println(accMag);
   } else if (accMag>=30) {
+    ball.setSpeed(3);
     valueToSend = 0.125;
     println(accMag);
   } else {
+    ball.setSpeed(0);
     valueToSend = 0.0;
     println(accMag);
   }

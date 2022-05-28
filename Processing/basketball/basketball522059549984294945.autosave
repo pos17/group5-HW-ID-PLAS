@@ -40,6 +40,7 @@ ButtonBar bar;
 Ball ball = new Ball();
 
 void setup() {
+  setupOSC();
   fullScreen(P3D);
   colorMode(HSB);
   lights();
@@ -50,19 +51,8 @@ void setup() {
   //sf = new SoundFile(this, "SaponeLiquido.mp3");
   //sf.rate();
   //sf.loop();
-  
-  
-  //AUDIO INPUT
-  Sound s = new Sound(this);
-  Sound.list();
-  s.inputDevice(14);
-
-  // Now get the first audio input channel from that sound device (ids again start at 0)
-  AudioIn in = new AudioIn(this, 0);
-  
-  //AMPLITUDE ANALYZER
-  amp = new Amplitude(this);
-  amp.input(in); //INPUT
+  //amp = new Amplitude(this);
+  //amp.input(sf);
 
   //bd = new BeatDetector(this);
   //bd.input(sf);
@@ -78,15 +68,14 @@ void setup() {
     .setPosition(width/6, height/8*7)
     .setSize(width/3*2, height/8)
     .addItems(split("bpm scale sensors", " "));
-
-  bar.getValueLabel().setFont(createFont("Arial", 60));
-
-  ball.initBall(200);
-  setupOSC();
+    
+  bar.getValueLabel().setFont(createFont("Arial",60));
+  
+  ball.initBall(100);
 }
 
 void draw() {
-
+  //float ampValue = amp.analyze();
   background(0);
 
   //if (ampValue>0.7) t0=millis();
@@ -94,9 +83,13 @@ void draw() {
 
   if (mainWindow) drawMainWindow();
   else drawSensorWindow();
+
 }
 
-
+void setA(float aA) {
+  a = aA;
+  b= a/1.5;
+}
 
 /* SPEED in range(1, 3)*/
 //void setSpeed(int speed) {
@@ -118,7 +111,7 @@ void draw() {
 //  println(speedBall);
 //}4
 
-void mousePressed() {
+void mousePressed(){
   //t0=millis();
   //mainWindow = !mainWindow;
   //speedBall++;
@@ -126,9 +119,8 @@ void mousePressed() {
   //ball.setSpeed(speedBall%4);
 }
 
-void drawMainWindow() {
-  float ampValue = amp.analyze();
-  pushMatrix();
+void drawMainWindow(){
+    pushMatrix();
   w1.calcWave(time2, t0);
   w2.calcWave(time2, t0);
   w3.calcWave(time2, t0);
@@ -156,9 +148,8 @@ void drawMainWindow() {
   updatePixels();
   popMatrix();
 
-  ball.drawBall(ampValue);
+  ball.drawBall();
   time2=millis();
 }
 
-void drawSensorWindow() {
-}
+void drawSensorWindow(){}

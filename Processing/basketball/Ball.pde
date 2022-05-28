@@ -16,7 +16,7 @@ class Ball {
     this.numLines = numLines;
   }
 
-  void drawBall() {
+  void drawBall(float ampValue) {
     pushMatrix();
     translate(width/2, height/2, 0);
     //spotLight(255, 255, 255,
@@ -25,12 +25,12 @@ class Ball {
     //  PI/2, 1);
     rotateY(radians(angleH));
     //setA(a0+5*sin(c));
-    a = a0;
-    b = b0;
-    //setA(a0+50*ampValue);
-    //elipse.changeRadius(a+b);
-    //hor.changeRadius(a+b);
-    //vert.changeRadius(a+b);
+    //a = a0;
+    //b = b0;
+    setA(a0+50*ampValue);
+    elipse.changeRadius(a+b);
+    hor.changeRadius(a+b);
+    vert.changeRadius(a+b);
 
     //BASKET LINE
     x = a*cos(radians(t)) + b*cos(3*radians(t));
@@ -66,10 +66,16 @@ class Ball {
     c+=0.1;
     popMatrix();
   }
-  
-  void setSpeed(int speed){
-    if (speed==1) angleIncrement = 0.7;
-    if (speed==2) angleIncrement = 1.4;
-    if (speed==3) angleIncrement = 2.1;
+
+  void setA(float aA) {
+    a = aA;
+    b= a/1.5;
+  }
+
+  void setSpeed(int speed) {
+    if (speed==0) angleIncrement = 0.7;
+    if (speed==1) angleIncrement = 1.4;
+    if (speed==2) angleIncrement = 2.1;
+    if (speed==3) angleIncrement = 2.8;
   }
 }
