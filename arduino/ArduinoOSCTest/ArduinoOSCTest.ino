@@ -15,7 +15,6 @@
   by Tom Igoe
 */
 #include <Arduino.h>
-#include <Vector.h>
 #include <SPI.h>
 #include <WiFiNINA.h>
 #include <WiFiUdp.h>
@@ -31,9 +30,13 @@ WiFiUDP Udp;                 // instance of UDP library
 const int potPin = A4;
 const int shakePin = A3;
 const int heartPin =  A1;
-const int switchPin1 = 2;
-const int switchPin2 = 3; 
+//const int switchPin1 = 2;
+//const int switchPin2 = 3;
 
+// LEDs must be connected to arduino PWM pins - see board pinout
+#define RED  5   // pin that red led is connected to    
+#define GREEN  3 // pin that green led is connected to     
+#define BLUE  4  // pin that blue led is connected to  
 
 
 //value of shake
@@ -53,6 +56,14 @@ unsigned long hsSendOSCTime = millis();
 const int HS_SEND_OSC_DELAY = 500;
 
 
+const int VOLDELAY = 3;
+unsigned long volTime = millis();
+
+//volume
+float volumeVal = 0;
+float volumeValHistory = 0;
+
+
 
 //BLOODPRESSURE
 float bpMean = 0;
@@ -62,38 +73,62 @@ void readyFeedback() {
   const int BLDL = 200;
   // when connected to net the system gives feedback blinking led GREEN RED BLUE AND THREE GREEN
   WiFiDrv::analogWrite(25, 255);
+  analogWrite(RED, 0);
   WiFiDrv::analogWrite(26, 0);
+  analogWrite(GREEN, 255);
   WiFiDrv::analogWrite(27, 0);
+  analogWrite(BLUE, 255);
   delay(BLDL);
   WiFiDrv::analogWrite(25, 0);
+  analogWrite(RED, 255);
   WiFiDrv::analogWrite(26, 0);
+  analogWrite(GREEN, 255);
   WiFiDrv::analogWrite(27, 0);
+  analogWrite(BLUE, 255);
   delay(BLDL);
   WiFiDrv::analogWrite(25, 0);
+  analogWrite(RED, 255);
   WiFiDrv::analogWrite(26, 255);
+  analogWrite(GREEN, 0);
   WiFiDrv::analogWrite(27, 0);
+  analogWrite(BLUE, 255);
   delay(BLDL);
   WiFiDrv::analogWrite(25, 0);
+  analogWrite(RED, 255);
   WiFiDrv::analogWrite(26, 0);
+  analogWrite(GREEN, 255);
   WiFiDrv::analogWrite(27, 0);
+  analogWrite(BLUE, 255);
   delay(BLDL);
   WiFiDrv::analogWrite(25, 0);
+  analogWrite(RED, 255);
   WiFiDrv::analogWrite(26, 0);
+  analogWrite(GREEN, 255);
   WiFiDrv::analogWrite(27, 255);
+  analogWrite(BLUE, 0);
   delay(BLDL);
   WiFiDrv::analogWrite(25, 0);
+  analogWrite(RED, 255);
   WiFiDrv::analogWrite(26, 0);
+  analogWrite(GREEN, 255);
   WiFiDrv::analogWrite(27, 0);
+  analogWrite(BLUE, 255);
   delay(BLDL);
 
   for (int i = 0; i < 3; ++i) {
     WiFiDrv::analogWrite(25, 0);
+    analogWrite(RED, 255);
     WiFiDrv::analogWrite(26, 255);
+    analogWrite(GREEN, 0);
     WiFiDrv::analogWrite(27, 0);
+    analogWrite(BLUE, 255);
     delay(BLDL);
     WiFiDrv::analogWrite(25, 0);
+    analogWrite(RED, 255);
     WiFiDrv::analogWrite(26, 0);
+    analogWrite(GREEN, 255);
     WiFiDrv::analogWrite(27, 0);
+    analogWrite(BLUE, 255);
     delay(BLDL);
 
   }
@@ -106,6 +141,12 @@ void setup() {
   WiFiDrv::pinMode(25, OUTPUT); //define green pin
   WiFiDrv::pinMode(26, OUTPUT); //define red pin
   WiFiDrv::pinMode(27, OUTPUT); //define blue pin
+
+  // LED connection pins to be set as an output
+  pinMode(RED, OUTPUT);
+  pinMode(GREEN, OUTPUT);
+  pinMode(BLUE, OUTPUT);
+
 
   //PINMODE SETUP FOR INPUT PINS
   pinMode(shakePin, INPUT);
@@ -123,12 +164,18 @@ void setup() {
     SerialUSB.println (SECRET_SSID);           // print the network name (SSID)
     WiFi.begin(SECRET_SSID, SECRET_PASS);  // try to connect
     WiFiDrv::analogWrite(25, 255);
+    analogWrite(RED, 0);
     WiFiDrv::analogWrite(26, 0);
+    analogWrite(GREEN, 255);
     WiFiDrv::analogWrite(27, 255);
+    analogWrite(BLUE, 0);
     delay(1000);
     WiFiDrv::analogWrite(25, 0);
+    analogWrite(RED, 255);
     WiFiDrv::analogWrite(26, 0);
+    analogWrite(GREEN, 255);
     WiFiDrv::analogWrite(27, 0);
+    analogWrite(BLUE, 255);
     delay(1000);
   }
 
@@ -143,17 +190,20 @@ void setup() {
 }
 
 void loop() {
+
   checkShakeInput();
   checkBloodPressure();
-  SerialUSB.println(analogRead(potPin));
-  if(digitalRead(switchPin1)) {
-    SerialUSB.println("switch pos1");  
-  }else if(digitalRead(switchPin2)) {
-    SerialUSB.println("switch pos3");  
-  } else {
-    SerialUSB.println("switch pos2");  
-  }
+  setVolume();
   
+  /*
+    if(digitalRead(switchPin1)) {
+    SerialUSB.println("switch pos1");
+    }else if(digitalRead(switchPin2)) {
+    SerialUSB.println("switch pos3");
+    } else {
+    SerialUSB.println("switch pos2");
+    }
+  */
   /*
     if(millis()-hsTime>1000/SAMP_FREQ){
     checkShakeInput();
@@ -239,7 +289,7 @@ void checkShakeInput() {
 */
 void checkBloodPressure() {
   float bloodPress = analogRead(heartPin);
-  SerialUSB.println(bloodPress);
+  //SerialUSB.println(bloodPress);
   bpMean += bloodPress;
   numOfElements++;
   //SerialUSB.println(bpMean);
@@ -247,16 +297,36 @@ void checkBloodPressure() {
     bpMean /= numOfElements;
     //DO SOMETHING
     OSCMessage msg("/arduino/BloodPressure/val");
-    SerialUSB.println("BPMEAN");
-    SerialUSB.println(bpMean);
-    
+    //SerialUSB.println("BPMEAN");
+    //SerialUSB.println(bpMean);
+
     msg.add(bpMean);
     Udp.beginPacket(remoteAddress, remotePort);
     msg.send(Udp); // send the bytes to the SLIP stream
     Udp.endPacket(); // mark the end of the OSC Packet
     msg.empty(); // free space occupied by message
     bpTime = millis();
-    bpMean=0;
+    bpMean = 0;
     numOfElements = 0;
+  }
+}
+
+void setVolume() {
+  volumeVal = analogRead(potPin);
+  if (millis() - volTime > VOLDELAY) {
+    if (volumeVal != volumeValHistory) {
+      float volToSend = 0;
+      volToSend = volumeVal /1023;
+      OSCMessage msg("/arduino/volume/val");
+      SerialUSB.println("VOL SET");
+      SerialUSB.println(volToSend);
+      msg.add(volToSend);
+      Udp.beginPacket(remoteAddress, remotePort);
+      msg.send(Udp); // send the bytes to the SLIP stream
+      Udp.endPacket(); // mark the end of the OSC Packet
+      msg.empty(); // free space occupied by message
+      volTime = millis();
+      volumeValHistory = volumeVal;
+    }
   }
 }
