@@ -4,6 +4,14 @@ Server.default.options.outDevice_("Altoparlanti MacBook Pro");
 )
 
 (
+
+s.boot;
+s.set
+v = Volume.new(s,0,2)
+v.volume = -20;
+
+~bus = Bus.audio(s, 2);
+
 //LOAD PATTERNS
 ~scale = 13;
 ~patterns = [
@@ -23,6 +31,9 @@ Server.default.options.outDevice_("Altoparlanti MacBook Pro");
 
 ~arpPatterns3 = [[[46,43,39,36]+[~scale+12,~scale+12,~scale+12,~scale+12],[3/4,1/2,1/4,1/2]],[[36,36,36,43,39,46]+[~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12],[3/8,1/4,1/4,1/2,1/2,1/8]],[[39,43,36,39,36,38,39,48,46,36,39,39,39,48]+[~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12],[1/6,1/6,1/6,1/6,3/36,3/36,1/6,1/6,3/36,3/36,1/6,1/6,1/6,1/6]],[[36,48,36,48,36,48]+[~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12], [1/8,1/8,1/8,1/8,1/8,1/8,1/8,1/8]]];
 
+
+~arpPatterns2 = [~arpPatterns1,~arpPatterns2,~arpPatterns3];
+~arpPatterns = ~arpPatterns2[3.rand];
 
 ~chords = [[36,39,43]+[~scale,~scale,~scale], [38,41,45]+[~scale,~scale,~scale], [39,43,46]+[~scale,~scale,~scale], [41,44,48]+[~scale,~scale,~scale],[31,34,38]+[~scale,~scale,~scale],[32,36,39]+[~scale,~scale,~scale],[34,38,41]+[~scale,~scale,~scale]];
 
@@ -47,13 +58,13 @@ Server.default.options.outDevice_("Altoparlanti MacBook Pro");
 ~hiHatDur = 1/2;
 ~numDrums = 2;
 ~numPattern =4;
-~arp =1
+~arp =1;
 
 
 ~ampKick = 0.8;
 ~ampSnare = 1;
 ~ampHiHat = 0.2;
-~ampChord = 0.6;
+~ampChord = 0.4;
 ~ampBass = 1;
 
 
@@ -272,23 +283,16 @@ SynthDef(\bass, { |outbus, midinote = 42|
 	\instrument, "juno",
 	\midinote, Pdefn(\chord),
 	\dur, Pseq([2, 2, 2, 2], inf),
-	\amp, Pdefn(\ampChord)
+	\amp, Pdefn(\ampChord),
 ).play;
 
 ~pArp = Pbind(
 	\instrument, "juno2",
 	\midinote, Pdefn(\arpNote),
 	\dur, Pdefn(\arpDur),
-	\amp, Pdefn(\ampArp)
+	\amp, Pdefn(\ampArp),
 	\mod, 0.2
 ).play;
-
-/*Pbind(
-	\instrument, "juno3",
-	\midinote, Pseq([24, 27, 31, 29], inf),
-	\dur, Pseq([2, 2, 2, 2], inf),
-	\amp, 1.2
-).play;*/
 
 ~pBass = Pbind(
     \instrument, "bass",
@@ -319,7 +323,6 @@ SynthDef(\bass, { |outbus, midinote = 42|
 	\sinfreq, 180,
 	\ffreq, 500,
 	\amp, Pdefn(\ampSnare),
-
 ).play;
 
 
@@ -330,7 +333,7 @@ SynthDef(\bass, { |outbus, midinote = 42|
 	\rel, 0.1,
 	\ffreq, 11000,
 	\pan, 0,
-	\amp, Pdefn(\ampHiHat)
+	\amp, Pdefn(\ampHiHat),
 ).play;
 
 OSCdef.new(\get_Arp,
@@ -379,4 +382,16 @@ OSCdef.new(\get_BPM_set,
 	},
 	"/processing/SCControls/setBPM"
 );
+
+OSCdef.new(\get_BPM_set,
+	{
+		arg msg, time, addr, port;
+		postln("BPM SET value:");
+		postln(msg[1]);
+		~bpm = msg[1];
+		TempoClock.default.tempo = ~bpm/120;
+	},
+	"/processing/SCControls/setMainVolume"
+);
+
 )
