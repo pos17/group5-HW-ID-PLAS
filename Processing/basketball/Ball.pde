@@ -5,6 +5,7 @@ class Ball {
   int numLines;
   float time, delay=1, t=0;
   myLine elipse, vert, hor;
+  color lineColor = color(255);
 
   Ball() {
   }
@@ -74,6 +75,12 @@ class Ball {
     if (speed==1) angleIncrement = 0.7;
     if (speed==2) angleIncrement = 1.4;
     if (speed==3) angleIncrement = 2.1;
+  }
+  
+  void setColor(color aColor){
+    elipse.setColor(aColor);
+    hor.setColor(aColor);
+    vert.setColor(aColor);
   }
 
   void setA(float aA) {
