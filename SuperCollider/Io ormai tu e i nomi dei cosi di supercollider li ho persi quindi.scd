@@ -4,15 +4,13 @@ Server.default.options.outDevice_("Altoparlanti MacBook Pro");
 )
 
 (
-
 s.boot;
-s.set
-v = Volume.new(s,0,2)
+v = Volume.new(s,0,2);
+)
+
+(
 v.volume = -20;
 
-~bus = Bus.audio(s, 2);
-
-//LOAD PATTERNS
 ~scale = 13;
 ~patterns = [
 	[[0,36,36,39,39,38,34,31]+[0,~scale,~scale,~scale,~scale,~scale,~scale,~scale],[1/8,1/4,3/8,1/4,1/4,3/8,1/8,1/4]],
@@ -123,6 +121,7 @@ SynthDef("kick", {
 	snd = snd + (PinkNoise.ar()*0.1*envNoise);
 	snd = Pan2.ar(snd, pan);
 	Out.ar(out, snd);
+	Out.ar(2, snd);
 }).add;
 
 
@@ -132,6 +131,7 @@ SynthDef("hihat", {arg out = 0, amp = 0.5, att = 0.01, rel = 0.2, ffreq = 6000, 
 	snd = WhiteNoise.ar;
 	snd = HPF.ar(in: snd, freq: ffreq, mul: env);
 	Out.ar(out, Pan2.ar(snd, pan));
+	Out.ar(2, snd);
 }).add;
 
 
@@ -147,6 +147,7 @@ SynthDef("snare", {arg out = 0, amp = 1, sinfreq = 180, att = 0.01, rel = 0.2, f
 	snd2 = SinOsc.ar(sinfreq, mul:env);
 	sum = LPF.ar(snd1 + snd2*0.3,7000);
 	Out.ar(out, Pan2.ar(sum, pan));
+	Out.ar(2, Pan2.ar(sum, pan));
 }).add;
 
 
@@ -164,6 +165,7 @@ SynthDef("sawSynth", { arg freq = 440, amp = 0.1, att = 0.01, rel = 0.05, lofreq
 	);
     snd = Splay.ar(snd);
     Out.ar(0, snd);
+	Out.ar(2, snd);
 }).add;
 
 
@@ -187,6 +189,7 @@ SynthDef("juno", {arg freq = 440, amp = 0.1, gate = 1, out=0, unison=1, cutoff=1
 
 
 	Out.ar(0, sig*amp,200);
+	Out.ar(2, sig*amp,200);
 }).add;
 
 SynthDef("juno2", {arg freq = 440, amp = 1, gate = 1, out=0, unison=1, cutoff=2000, rq=1.5, delay=0.2, mod=1;
@@ -205,6 +208,7 @@ SynthDef("juno2", {arg freq = 440, amp = 1, gate = 1, out=0, unison=1, cutoff=20
 	sig = 2*(1-mod)*mix + mod*chorus;
 
 	Out.ar(0, FreeVerb.ar(HPF.ar(sig*amp,200),0.3));
+	Out.ar(2, FreeVerb.ar(HPF.ar(sig*amp,200),0.3));
 }).add;
 
 SynthDef("juno3", {arg freq = 440, amp = 1, gate = 1, out=0, unison=1, cutoff=200, rq=1, delay=0.2, mod=0;
@@ -225,6 +229,7 @@ SynthDef("juno3", {arg freq = 440, amp = 1, gate = 1, out=0, unison=1, cutoff=20
 
 
 	Out.ar(0, sig*amp);
+	Out.ar(2, sig*amp);
 }).add;
 
 
@@ -272,7 +277,8 @@ SynthDef(\bass, { |outbus, midinote = 42|
   // Another resonant LPF
   sig = MoogFF.ar(sig, XLine.ar(freq*150, freq*30, 0.1), 0.1);
 
-  Out.ar(outbus, sig!2);
+  Out.ar(0, sig!2);
+	Out.ar(2, sig!2);
 }).add;
 
 
@@ -382,16 +388,4 @@ OSCdef.new(\get_BPM_set,
 	},
 	"/processing/SCControls/setBPM"
 );
-
-OSCdef.new(\get_BPM_set,
-	{
-		arg msg, time, addr, port;
-		postln("BPM SET value:");
-		postln(msg[1]);
-		~bpm = msg[1];
-		TempoClock.default.tempo = ~bpm/120;
-	},
-	"/processing/SCControls/setMainVolume"
-);
-
 )
