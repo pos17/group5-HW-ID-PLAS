@@ -146,7 +146,7 @@ void draw() {
   
   //osc part
   sendBPM();
-  
+  update();
   if (mainWindow) drawMainWindow();
   else drawSensorWindow();
 }

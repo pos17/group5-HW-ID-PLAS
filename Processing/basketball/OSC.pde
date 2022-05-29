@@ -96,16 +96,16 @@ void oscEvent(OscMessage theOscMessage) {
       float firstValue = theOscMessage.get(0).floatValue();  // get the first osc argument
       yaw = firstValue;
       int valToSend = 0;
-      if(yaw <-90) {
+      if (yaw <-90) {
         valToSend=0;
-      } else if(yaw <0) {
+      } else if (yaw <0) {
         valToSend=1;
-      }  else if(yaw <90) {
+      } else if (yaw <90) {
         valToSend=2;
-      }  else if(yaw <180) {
+      } else if (yaw <180) {
         valToSend=3;
       }
-      if(valToSend!=valToSendHistory) {
+      if (valToSend!=valToSendHistory) {
         OscMessage myMessage = new OscMessage("/processing/SCControls/changingPattern");
         myMessage.add(valToSend); /* add an int to the osc message */
         /* send the message */
@@ -134,9 +134,7 @@ void oscEvent(OscMessage theOscMessage) {
       setAccMag(accX, accY, accZ);
       return;
     }
-  }
-  
-  else if (theOscMessage.checkAddrPattern("/arduino/handshake/val")==true) {
+  } else if (theOscMessage.checkAddrPattern("/arduino/handshake/val")==true) {
     /* check if the typetag is the right one. */
     if (theOscMessage.checkTypetag("i")) {
       /* parse theOscMessage and extract the values from the osc message arguments. */
@@ -156,8 +154,7 @@ void oscEvent(OscMessage theOscMessage) {
        
        }
        */
-       return;
-      
+      return;
     }
   }
 }
@@ -184,7 +181,7 @@ void setAccMag(float x, float y, float z) {
     ball.setSpeed(2);
     valueToSend = 2;
     println(accMag);
-  } else if (accMag>=25 && accMag<30) {
+  } else if (accMag>=23 && accMag<20) {
     ball.setSpeed(3);
     valueToSend = 3;
     println(accMag);
@@ -232,7 +229,7 @@ void update() {
 }
 
 void sendBPM() {
-  if(bpm!=bpmHistory) {
+  if (bpm!=bpmHistory) {
     OscMessage myMessage = new OscMessage("/processing/SCControls/setBPM");
     myMessage.add(bpm); /* add an int to the osc message */
     /* send the message */
@@ -241,5 +238,52 @@ void sendBPM() {
     oscP5.send(myMessage, myRemoteLocation);
     bpmHistory=bpm;
   }
-  
+}
+
+void setScale() {
+  int scaleValue = 0;
+  switch(whatScale) {
+  case "C#":
+    scaleValue = 1;
+    break;
+  case "D":
+    scaleValue = 2;
+    break;
+  case "D#":
+    scaleValue = 3;
+    break;
+  case "E":
+    scaleValue = 4;
+    break;
+  case "F":
+    scaleValue = 5;
+    break;
+  case "F#":
+    scaleValue = 6;
+    break;
+  case "G":
+    scaleValue = 7;
+    break;
+  case "G#":
+    scaleValue = 8;
+    break;
+  case "A":
+    scaleValue = 9;
+    break;
+  case "A#":
+    scaleValue = 10;
+    break;
+  case "B":
+    scaleValue = 11;
+    break;
+  case "C":
+    scaleValue = 12;
+    break;
+  }
+  OscMessage myMessage = new OscMessage("/processing/SCControls/setScale");
+  myMessage.add(scaleValue); /* add an int to the osc message */
+  /* send the message */
+  println("sendingScale");
+  println(scaleValue);
+  oscP5.send(myMessage, myRemoteLocation);
 }
