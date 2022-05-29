@@ -3,28 +3,23 @@ import controlP5.*;
 import java.util.*;
 
 
-int angle=0;
 myLine elipse, vert, hor;
 ExpSine w1, w2, w3, w4, w5;
 float x = 0;
 float y = 0;
 float z = 0;
 float yV, zV, zH, xH;
-PVector vec;
-float angleH=0;
-float angleV=0;
-float radius=10;
 float time=0, time2=0;
 float delay = 1;
 float t;
-float a = 70;
-float b = a/2;
 float c =0;
 float freq = 0.2;
 int amplitude =20, numLines=80, speedBall=1, randomness=0;
+int hueBall = 150;
 float t0=0;
 int bpm0 = 100, bpm;
 String whatScale;
+
 
 boolean mainWindow = true;
 boolean bpmSliderVisible = false;
@@ -152,6 +147,7 @@ void mousePressed() {
 }
 
 void drawMainWindow() {
+  if(frameCount%90 == 0) t0=millis();
   hint(ENABLE_DEPTH_TEST);
   pushMatrix();
   ball.setA0(200);
@@ -183,7 +179,8 @@ void drawMainWindow() {
   updatePixels();
   popMatrix();
   translate(width/2, height/2, 0);
-
+  
+  ball.setColor(color(frameCount%255, 255, 200));
   ball.drawBall();
   time2=millis();
   popMatrix();
@@ -220,7 +217,6 @@ void checkBox(float []a) {
   bpmSlider.setVisible(a[0]==1);
   scale.setVisible(a[1]==1);
   mainWindow = a[2]==0;
-  if (a[2]==1) sens1.init(0, 0);
 }
 
 void bpmSlider(int value) {

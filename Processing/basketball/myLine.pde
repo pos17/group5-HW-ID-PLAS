@@ -7,6 +7,7 @@ class myLine {
   float x0;
   float y0;
   float z0;
+  color lineColor = color(0,0,255);
 
   float randomness;
 
@@ -57,7 +58,8 @@ class myLine {
 
       noFill();
       //stroke(255*i/numLines, 255, 255, 55 + 200*i/numLines);
-      stroke(0, 0, 255, 55 + 200*i/numLines);
+      //stroke(0, 0, 255, 55 + 200*i/numLines);
+      stroke(map(i, 0, numLines, (hue(lineColor)-50), hue(lineColor)), saturation(lineColor), brightness(lineColor), 55 + 200*i/numLines);
       strokeWeight(5+15*i/numLines);
 
       curve(
@@ -84,5 +86,9 @@ class myLine {
       prevY.set(i, pv.y);
       prevZ.set(i, pv.z);
     }
+  }
+  
+  void setColor(color aColor){
+    lineColor = aColor;
   }
 }
