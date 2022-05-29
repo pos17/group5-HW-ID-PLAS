@@ -291,3 +291,60 @@ void setScale() {
     whatScaleHistory = whatScale;
   }
 }
+
+void setMainVolume() {
+  OscMessage myMessage = new OscMessage("/processing/SCControls/setMainVolume");
+    myMessage.add(mainVolume); /* add an int to the osc message */
+    /* send the message */
+    println("mainVolume");
+    println(mainVolume);
+    oscP5.send(myMessage, myRemoteLocation);
+}
+void setKickVolume() {
+  OscMessage myMessage = new OscMessage("/processing/SCControls/setkickVolume");
+    myMessage.add(kickVolume); /* add an int to the osc message */
+    /* send the message */
+    println("kickVolume");
+    println(kickVolume);
+    oscP5.send(myMessage, myRemoteLocation);
+}
+void setSnareVolume() {
+  OscMessage myMessage = new OscMessage("/processing/SCControls/setMainVolume");
+    myMessage.add(snareVolume); /* add an int to the osc message */
+    /* send the message */
+    println("snareVolume");
+    println(snareVolume);
+    oscP5.send(myMessage, myRemoteLocation);
+}
+void setHihatVolume() {
+  OscMessage myMessage = new OscMessage("/processing/SCControls/setMainVolume");
+    myMessage.add(hihatVolume); /* add an int to the osc message */
+    /* send the message */
+    println("hihatVolume");
+    println(hihatVolume);
+    oscP5.send(myMessage, myRemoteLocation);
+}
+void setArpVolume() {
+  OscMessage myMessage = new OscMessage("/processing/SCControls/setMainVolume");
+    myMessage.add(arpVolume); /* add an int to the osc message */
+    /* send the message */
+    println("mainVolume");
+    println(mainVolume);
+    oscP5.send(myMessage, myRemoteLocation);
+}
+void setChordVolume() {
+  OscMessage myMessage = new OscMessage("/processing/SCControls/setMainVolume");
+    myMessage.add(chordVolume); /* add an int to the osc message */
+    /* send the message */
+    println("chordVolume");
+    println(chordVolume);
+    oscP5.send(myMessage, myRemoteLocation);
+}
+void setBassVolume() {
+  OscMessage myMessage = new OscMessage("/processing/SCControls/setMainVolume");
+    myMessage.add(bassVolume); /* add an int to the osc message */
+    /* send the message */
+    println("bassVolume");
+    println(bassVolume);
+    oscP5.send(myMessage, myRemoteLocation);
+}

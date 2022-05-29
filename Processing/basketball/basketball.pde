@@ -20,6 +20,15 @@ float t0=0;
 int bpm0 = 100, bpm, bpmHistory;
 String whatScale, whatScaleHistory;
 
+//VOLUMES
+float mainVolume=0.5;
+float kickVolume=0.5;
+float snareVolume=0.5;
+float hihatVolume=0.5;
+float chordVolume=0.5;
+float bassVolume=0.5;
+float arpVolume=0.5;
+
 
 boolean mainWindow = true;
 boolean bpmSliderVisible = false;
