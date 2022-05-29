@@ -23,7 +23,7 @@ float c =0;
 float freq = 0.2;
 int amplitude =20, numLines=80, speedBall=1, randomness=0;
 float t0=0;
-int bpm0 = 100, bpm;
+int bpm0 = 100, bpm, bpmHistory;
 String whatScale;
 
 boolean mainWindow = true;
@@ -50,6 +50,7 @@ void setup() {
   fullScreen(P3D);
   colorMode(HSB);
   lights();
+  setupOSC();
 
   cp5 = new ControlP5(this);
   buttons = cp5.addGroup("button menu");
@@ -117,8 +118,9 @@ void setup() {
     .hide()
     .setLabelVisible(false)
     .setBarVisible(false)
-    .setGroup(buttons)
-    ;
+    .setGroup(buttons);
+
+
   scale.getValueLabel()
     .setFont(createFont("Arial", height/50))
     .align(ControlP5.CENTER, ControlP5.CENTER);
@@ -127,7 +129,7 @@ void setup() {
 
   // BALL
   ball.initBall(80, height/6);
-  
+
   sens1 = new Plot("sens1", width/5*3-50, height/5);
   sens2 = new Plot("sens2", width/5*3-50, height/5);
   sens3 = new Plot("sens3", width/5*3-50, height/5);
@@ -141,7 +143,10 @@ void draw() {
 
   //if (ampValue>0.7) t0=millis();
   //if (bd.isBeat()) t0=millis();
-
+  
+  //osc part
+  sendBPM();
+  
   if (mainWindow) drawMainWindow();
   else drawSensorWindow();
 }
@@ -188,7 +193,6 @@ void drawMainWindow() {
   time2=millis();
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
-  
 }
 
 void drawSensorWindow() {
@@ -198,8 +202,8 @@ void drawSensorWindow() {
   text("SENS 1", 50, height/4-50);
   text("SENS 2", 50, height/2-50);
   text("SENS 3", 50, height/4*3-50);
-  
-  
+
+
   sens1.init(250, height/4-150);
   sens2.init(250, height/2-150);
   sens3.init(250, height/4*3-150);
@@ -207,7 +211,7 @@ void drawSensorWindow() {
   sens1.update(sin(radians(frameCount))*50);
   sens2.update(sin(radians(10*frameCount))*30);
   sens3.update(sin(radians(20*frameCount))*40);
-  
+
   pushMatrix();
   translate(width-width/6, height/2);
   ball.setA0(120);

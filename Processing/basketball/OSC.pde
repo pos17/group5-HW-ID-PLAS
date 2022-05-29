@@ -176,21 +176,25 @@ void setAccMag(float x, float y, float z) {
     accMag += accMagList.get(i);
   }
   accMag /= accMagList.size();
-  if (accMag>5 && accMag<13) {
+  if (accMag>10 && accMag<18) {
     ball.setSpeed(1);
-    valueToSend = 0.5;
+    valueToSend = 1;
     println(accMag);
-  } else if (accMag>=13 && accMag<30) {
+  } else if (accMag>=18 && accMag<25) {
     ball.setSpeed(2);
-    valueToSend = 0.25;
+    valueToSend = 2;
+    println(accMag);
+  } else if (accMag>=25 && accMag<30) {
+    ball.setSpeed(3);
+    valueToSend = 3;
     println(accMag);
   } else if (accMag>=30) {
-    ball.setSpeed(3);
-    valueToSend = 0.125;
+    ball.setSpeed(4);
+    valueToSend = 4;
     println(accMag);
   } else {
     ball.setSpeed(0);
-    valueToSend = 0.0;
+    valueToSend = 0;
     println(accMag);
   }
   if (millis() - accMagTime >accMagDelay ) {
@@ -216,7 +220,7 @@ void update() {
     } else {
       value = 2;
     }
-    OscMessage myMessage = new OscMessage("/processing/SCControls/ChangeThings");
+    OscMessage myMessage = new OscMessage("/processing/SCControls/DrumVelocity");
     myMessage.add(value);
     // send the message
     println("SENDING OSC MESSAGE TO SC");
@@ -225,4 +229,17 @@ void update() {
     shakeResetTime = millis();
     shakesIter = 0;
   }
+}
+
+void sendBPM() {
+  if(bpm!=bpmHistory) {
+    OscMessage myMessage = new OscMessage("/processing/SCControls/setBPM");
+    myMessage.add(bpm); /* add an int to the osc message */
+    /* send the message */
+    println("sendingArp");
+    println(bpm);
+    oscP5.send(myMessage, myRemoteLocation);
+    bpmHistory=bpm;
+  }
+  
 }

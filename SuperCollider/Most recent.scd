@@ -1,3 +1,10 @@
+
+
+(
+Server.default.options.inDevice_("Microfono MacBook Pro");
+Server.default.options.outDevice_("Altoparlanti MacBook Pro");
+)
+
 (
 //LOAD PATTERNS
 ~scale = 10;
@@ -35,18 +42,8 @@
 ~hiHatDur = 1/2;
 ~numDrums = 2;
 ~numPattern =4;
-~arp =1;
-)
+~arp =0;
 
-
-
-(
-//CHANGE BPM
-~bpm = 128;
-TempoClock.default.tempo = ~bpm/120;
-)
-
-(
 ~f = {
 ~patterns = [
 	[[0,36,36,39,39,38,34,31]+[0,~scale,~scale,~scale,~scale,~scale,~scale,~scale],[1/8,1/4,3/8,1/4,1/4,3/8,1/8,1/4]],
@@ -75,7 +72,6 @@ Pdefn(\arpDur,Pseq(~arpPatterns[~arpNum][1],inf));
 
 Pdefn(\kickDur,~drums[0][~numDrums]);
 Pdefn(\hiHatDur, ~drums[1][~numDrums]);
-	"cazzi".postln;
 	TempoClock.default.tempo*2.wait;
 };
 
@@ -319,18 +315,16 @@ SynthDef(\bass, { |outbus, midinote = 42|
 	\amp, 0.2
 ).play;
 
-)
-
-
-(
-
 OSCdef.new(\get_Arp,
 	{
 		arg msg, time, addr, port;
-		postln(msg[1]);
 		if(msg[1]<=0.0, {
+			postln("ARP 0");
 			~arp= 0.0;
 		},{
+
+			postln("ARP NOT 0");
+			postln(msg[1]);
 			~arp = 1;
 			~arpNum=msg[1];
 		})
@@ -338,19 +332,15 @@ OSCdef.new(\get_Arp,
 	},
 	"/processing/SCControls/ArpONOFF"
 );
-)
-(
 OSCdef.new(\get_Changes,
 	{
 		arg msg, time, addr, port;
 		postln(msg[1]);
 		~numDrums = msg[1];
 	},
-	"/processing/SCControls/ChangeThings"
+	"/processing/SCControls/DrumVelocity"
 );
-)
 
-(
 OSCdef.new(\get_Pattern_changes,
 	{
 		arg msg, time, addr, port;
@@ -359,5 +349,16 @@ OSCdef.new(\get_Pattern_changes,
 		~numPattern = msg[1];
 	},
 	"/processing/SCControls/changingPattern"
+);
+
+OSCdef.new(\get_BPM_set,
+	{
+		arg msg, time, addr, port;
+		postln("BPM SET value:");
+		postln(msg[1]);
+		~bpm = msg[1];
+		TempoClock.default.tempo = ~bpm/120;
+	},
+	"/processing/SCControls/setBPM"
 );
 )

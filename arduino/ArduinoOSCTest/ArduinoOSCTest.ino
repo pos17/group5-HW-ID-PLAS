@@ -28,8 +28,13 @@
 WiFiUDP Udp;                 // instance of UDP library
 
 //DEFINING PINS WITH USER-FRIENDLY NAMES
+const int potPin = A4;
 const int shakePin = A3;
 const int heartPin =  A1;
+const int switchPin1 = 2;
+const int switchPin2 = 3; 
+
+
 
 //value of shake
 int shakeState = 0;
@@ -140,6 +145,15 @@ void setup() {
 void loop() {
   checkShakeInput();
   checkBloodPressure();
+  SerialUSB.println(analogRead(potPin));
+  if(digitalRead(switchPin1)) {
+    SerialUSB.println("switch pos1");  
+  }else if(digitalRead(switchPin2)) {
+    SerialUSB.println("switch pos3");  
+  } else {
+    SerialUSB.println("switch pos2");  
+  }
+  
   /*
     if(millis()-hsTime>1000/SAMP_FREQ){
     checkShakeInput();
