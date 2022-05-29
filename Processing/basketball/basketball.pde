@@ -18,7 +18,7 @@ int amplitude =20, numLines=80, speedBall=1, randomness=0;
 int hueBall = 150;
 float t0=0;
 int bpm0 = 100, bpm, bpmHistory;
-String whatScale;
+String whatScale, whatScaleHistory;
 
 
 boolean mainWindow = true;
@@ -142,6 +142,8 @@ void draw() {
   //osc part
   sendBPM();
   update();
+  setScale();
+  
   if (mainWindow) drawMainWindow();
   else drawSensorWindow();
 }

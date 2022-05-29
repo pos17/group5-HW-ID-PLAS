@@ -241,49 +241,53 @@ void sendBPM() {
 }
 
 void setScale() {
-  int scaleValue = 0;
-  switch(whatScale) {
-  case "C#":
-    scaleValue = 1;
-    break;
-  case "D":
-    scaleValue = 2;
-    break;
-  case "D#":
-    scaleValue = 3;
-    break;
-  case "E":
-    scaleValue = 4;
-    break;
-  case "F":
-    scaleValue = 5;
-    break;
-  case "F#":
-    scaleValue = 6;
-    break;
-  case "G":
-    scaleValue = 7;
-    break;
-  case "G#":
-    scaleValue = 8;
-    break;
-  case "A":
-    scaleValue = 9;
-    break;
-  case "A#":
-    scaleValue = 10;
-    break;
-  case "B":
-    scaleValue = 11;
-    break;
-  case "C":
-    scaleValue = 12;
-    break;
+  if (whatScale== whatScaleHistory) {
+    int scaleValue = 0;
+    switch(whatScale) {
+    case "C#":
+      scaleValue = 1;
+      break;
+    case "D":
+      scaleValue = 2;
+      break;
+    case "D#":
+      scaleValue = 3;
+      break;
+    case "E":
+      scaleValue = 4;
+      break;
+    case "F":
+      scaleValue = 5;
+      break;
+    case "F#":
+      scaleValue = 6;
+      break;
+    case "G":
+      scaleValue = 7;
+      break;
+    case "G#":
+      scaleValue = 8;
+      break;
+    case "A":
+      scaleValue = 9;
+      break;
+    case "A#":
+      scaleValue = 10;
+      break;
+    case "B":
+      scaleValue = 11;
+      break;
+    case "C":
+      scaleValue = 12;
+      break;
+    }
+
+    OscMessage myMessage = new OscMessage("/processing/SCControls/setScale");
+    myMessage.add(scaleValue); /* add an int to the osc message */
+    /* send the message */
+    println("sendingScale");
+    println(scaleValue);
+    oscP5.send(myMessage, myRemoteLocation);
+    whatScaleHistory = whatScale;
   }
-  OscMessage myMessage = new OscMessage("/processing/SCControls/setScale");
-  myMessage.add(scaleValue); /* add an int to the osc message */
-  /* send the message */
-  println("sendingScale");
-  println(scaleValue);
-  oscP5.send(myMessage, myRemoteLocation);
 }
