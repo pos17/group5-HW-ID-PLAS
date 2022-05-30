@@ -15,8 +15,11 @@ class Plot {
   }
 
   void init(float theX0, float theY0) {
+    
     x0 = theX0;
     y0 = theY0;
+    textAlign(CENTER);
+    text(name, x0-110, y0+sizeY/2);
     int dx = sizeX/gridLinesX;
     int dy = sizeY/gridLinesY;
     stroke(100);

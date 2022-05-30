@@ -2,6 +2,10 @@ import processing.sound.*;
 import controlP5.*;
 import java.util.*;
 
+int activeColor = unhex("ffadff02");
+int foregroundColor = unhex("ff01befe");
+int backgroundColor = unhex("ff8f00ff");
+
 
 myLine elipse, vert, hor;
 ExpSine w1, w2, w3, w4, w5;
@@ -37,8 +41,6 @@ Toggle barVisible, mixerVisible;
 CheckBox checkbox;
 ScrollableList scale;
 Group buttons;
-
-Plot sens1, sens2, sens3;
 
 Ball ball = new Ball();
 
@@ -78,6 +80,9 @@ void setup() {
     .addItem("sens", 0)
     .deactivateAll()
     .setGroup(buttons)
+    .setColorActive(activeColor)
+    .setColorForeground(foregroundColor)
+    .setColorBackground(backgroundColor)
     ;
   for (int i=0; i<checkbox.getItems().size(); i++) {
     checkbox.getItem(i)
@@ -94,13 +99,16 @@ void setup() {
     .setValue(bpm0)
     .hide()
     .setGroup(buttons)
+    .setColorActive(activeColor)
+    .setColorForeground(foregroundColor)
+    .setColorBackground(backgroundColor)
     ;
   bpmSlider.getCaptionLabel()
     .align(ControlP5.RIGHT, ControlP5.BOTTOM)
     .setPadding(10, 10);
 
   // SCROLLABLE LIST
-  List scales = Arrays.asList("C", "D", "E", "F", "G", "A", "B");
+  List scales = Arrays.asList("C", "C#", "D", "D#", "E", "E#", "F", "G", "G#", "A", "A#", "B");
   scale = cp5.addScrollableList("scales")
     .setPosition(width/9*2+width/6, height/8*6)
     //.setPosition(0, 0)
@@ -114,6 +122,9 @@ void setup() {
     .setLabelVisible(false)
     .setBarVisible(false)
     .setGroup(buttons)
+    .setColorActive(activeColor)
+    .setColorForeground(foregroundColor)
+    .setColorBackground(backgroundColor)
     ;
   scale.getValueLabel()
     .setFont(createFont("Arial", height/50))
@@ -124,14 +135,17 @@ void setup() {
   // BALL
   ball.initBall(80, height/6);
 
-  sens1 = new Plot("sens1", width/5*3-50, height/5);
-  sens2 = new Plot("sens2", width/5*3-50, height/5);
-  sens3 = new Plot("sens3", width/5*3-50, height/5);
+  sens1 = new Plot("SENS1", width/5*3-70, height/5);
+  sens2 = new Plot("SENS2", width/5*3-70, height/5);
+  sens3 = new Plot("SENS3", width/5*3-70, height/5);
 
   barVisible = cp5.addToggle("barVisible")
     .setPosition(0, height-100)
     .setSize(100, 100)
     .setValue(true)
+    .setColorActive(activeColor)
+    .setColorForeground(foregroundColor)
+    .setColorBackground(backgroundColor)
     ;
   barVisible.getCaptionLabel()
     .setText("BAR")
@@ -142,6 +156,9 @@ void setup() {
     .setPosition(width-100, height-100)
     .setSize(100, 100)
     .setValue(false)
+    .setColorActive(activeColor)
+    .setColorForeground(foregroundColor)
+    .setColorBackground(backgroundColor)
     ;
   mixerVisible.getCaptionLabel()
     .setText("MIXER")
@@ -160,17 +177,17 @@ void draw() {
 
   //if (ampValue>0.7) t0=millis();
   //if (bd.isBeat()) t0=millis();
-  
-  if (mouseY>(height-height/8) || barVisible.getBooleanValue()){
+
+  if (mouseY>(height-height/8) || barVisible.getBooleanValue()) {
     barVisible.show();
     mixerVisible.show();
-  }else{
+  } else {
     barVisible.hide();
     mixerVisible.hide();
   }
-  
-  mixerDrawable = mixerVisible.getBooleanValue(); 
-  
+
+  mixerDrawable = mixerVisible.getBooleanValue();
+
   if (!mixerDrawable) {
     hideMixer();
     if (mainWindow) drawMainWindow();
@@ -230,6 +247,7 @@ void drawMainWindow() {
 void checkBox(float []a) {
   bpmSlider.setVisible(a[0]==1);
   scale.setVisible(a[1]==1);
+  if (a[1]==1) scale.bringToFront();
   mainWindow = a[2]==0;
 }
 
@@ -243,6 +261,10 @@ void scales(int n) {
 
 void barVisible(boolean visible) {
   checkbox.setVisible(visible);
+  if (!visible) {
+    bpmSlider.hide();
+    scale.hide();
+  }
   //println("visible: "+visible);
 }
 

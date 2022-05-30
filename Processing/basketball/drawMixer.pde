@@ -1,3 +1,6 @@
+int muteColor = unhex("ffff7d00");
+int soloColor = unhex("ffffdd00");
+
 //Slider drumSli, bassSli, padSli, arpSli;
 Fader drumSli, bassSli, padSli, arpSli, masterSli;
 CheckBox mutes, solos;
@@ -36,6 +39,9 @@ void setupMixer() {
     .addItem("bassMute", 0)
     .addItem("padMute", 0)
     .addItem("arpMute", 0)
+    .setColorActive(muteColor)
+    .setColorForeground(unhex("ffcc6300"))
+    .setColorBackground(unhex("ff020122"))
     ;
 
   for (int i=0; i<mutes.getItems().size(); i++) {
@@ -45,17 +51,21 @@ void setupMixer() {
       .setFont(createFont("Arial", 30))
       .align(ControlP5.CENTER, ControlP5.CENTER);
   }
-  
+
   solos = cp5.addCheckBox("solos")
     .setSize(width/16, width/16/3*2)
-    .setPosition(sliderPaddingX,mutes.getPosition()[1]+(width/16/3*2)+20)
+    .setPosition(sliderPaddingX, mutes.getPosition()[1]+(width/16/3*2)+20)
     .setSpacingColumn(sliderPaddingX)
     .setItemsPerRow(4)
     .addItem("drumSolo", 0)
     .addItem("bassSolo", 0)
     .addItem("padSolo", 0)
     .addItem("arpSolo", 0)
+    .setColorActive(soloColor)
+    .setColorForeground(unhex("ffccb100"))
+    .setColorBackground(unhex("ff020122"))
     ;
+
 
   for (int i=0; i<solos.getItems().size(); i++) {
     solos.getItem(i)
@@ -96,26 +106,24 @@ void drawMixer() {
   ball.drawBall();
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
-  
-  for(int j=0; j<muteMask.length; j++){
+
+  for (int j=0; j<muteMask.length; j++) {
     //not soloed not muted
-    channelVolumes[j] = volumes[j] * muteMask[j]; 
+    channelVolumes[j] = volumes[j] * muteMask[j];
   }
   float soloSum = sum(soloMask);
-  for(int i=0; i<soloMask.length;i++){
-    if(soloSum!=0)channelVolumes[i] = volumes[i] * soloMask[i];
+  for (int i=0; i<soloMask.length; i++) {
+    if (soloSum!=0)channelVolumes[i] = volumes[i] * soloMask[i];
   }
   channelVolumes[4] = volumes[4];
-  
+
   println();
   println(channelVolumes);
-  
-  
 }
 
-float sum(float[] a){
+float sum(float[] a) {
   float sum=0;
-  for (int i=0; i<a.length; i++){
+  for (int i=0; i<a.length; i++) {
     sum = sum+a[i];
   }
   return sum;
@@ -141,16 +149,16 @@ void hideMixer() {
   solos.hide();
 }
 
-void mutes(float[] a){
-  for (int i=0;i<a.length; i++) {
+void mutes(float[] a) {
+  for (int i=0; i<a.length; i++) {
     boolean b = a[i]==1;
     b = !b;
     muteMask[i] = b ? 1.0 : 0.0;
   }
 }
 
-void solos(float[] a){
-  for (int i=0;i<a.length; i++) {
+void solos(float[] a) {
+  for (int i=0; i<a.length; i++) {
     boolean b = a[i]==1;
     soloMask[i] = b ? 1.0 : 0.0;
   }
@@ -173,6 +181,9 @@ class Fader {
       .setValue(3)
       .setSliderMode(Slider.FLEXIBLE)
       .setLabelVisible(false)
+      .setColorActive(activeColor)
+      .setColorForeground(unhex("ffff006d"))
+      .setColorBackground(unhex("ff020122"))
       ;
   }
 
@@ -203,10 +214,10 @@ class Fader {
   }
 
   void update() {
-    volumes[id] = pow(10,getVolume()/20);
+    volumes[id] = pow(10, getVolume()/20);
     float xcenter = fader.getPosition()[0]+fader.getWidth()/2;
     String volume = String.valueOf(getVolume());
-    
+
     // Name Label
     textAlign(CENTER);
     //textFont(arial);
@@ -218,11 +229,11 @@ class Fader {
     textSize(20);
     text(volume + " dB", xcenter, fader.getPosition()[1]+fader.getHeight()+30);
   }
-  
+
   void show() {
     cp5.getController(name).setVisible(true);
   }
-  
+
   void hide() {
     cp5.getController(name).setVisible(false);
   }
