@@ -92,7 +92,6 @@ void setup() {
     .setSize(width/9*2, 50)
     .setRange(80, 150)
     .setValue(bpm0)
-    //.bringToFront()
     .hide()
     .setGroup(buttons)
     ;
@@ -161,11 +160,25 @@ void draw() {
 
   //if (ampValue>0.7) t0=millis();
   //if (bd.isBeat()) t0=millis();
-
+  
+  if (mouseY>(height-height/8) || barVisible.getBooleanValue()){
+    barVisible.show();
+    mixerVisible.show();
+  }else{
+    barVisible.hide();
+    mixerVisible.hide();
+  }
+  
+  mixerDrawable = mixerVisible.getBooleanValue(); 
+  
   if (!mixerDrawable) {
+    hideMixer();
     if (mainWindow) drawMainWindow();
     else drawSensorWindow();
-  } else drawMixer();
+  } else {
+    showMixer();
+    drawMixer();
+  }
 }
 
 
@@ -207,7 +220,7 @@ void drawMainWindow() {
   popMatrix();
   translate(width/2, height/2, 0);
 
-  ball.setColor(color(frameCount%255, 255, 200));
+  ball.setColor(color(frameCount%255, 255, 255));
   ball.drawBall();
   time2=millis();
   popMatrix();
@@ -230,11 +243,11 @@ void scales(int n) {
 
 void barVisible(boolean visible) {
   checkbox.setVisible(visible);
-  println("visible: "+visible);
+  //println("visible: "+visible);
 }
 
-void mixerVisible(boolean visible) {
-  mixerDrawable = visible;
-  if (visible) showMixer();
-  else hideMixer();
-}
+//void mixerVisible(boolean visible) {
+//  mixerDrawable = visible;
+//  if (visible) showMixer();
+//  else hideMixer();
+//}
