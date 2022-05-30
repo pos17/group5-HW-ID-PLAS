@@ -22,6 +22,7 @@ String whatScale;
 
 
 boolean mainWindow = true;
+boolean mixerDrawable = false;
 boolean bpmSliderVisible = false;
 
 float a0=200, b0=a0/2;
@@ -31,8 +32,8 @@ SoundFile sf;
 BeatDetector bd;
 
 ControlP5 cp5;
-ButtonBar bar;
 Slider bpmSlider;
+Toggle barVisible, mixerVisible;
 CheckBox checkbox;
 ScrollableList scale;
 Group buttons;
@@ -43,6 +44,7 @@ Ball ball = new Ball();
 
 void setup() {
   fullScreen(P3D);
+  //size(800, 600, P3D);
   colorMode(HSB);
   lights();
 
@@ -122,10 +124,33 @@ void setup() {
 
   // BALL
   ball.initBall(80, height/6);
-  
+
   sens1 = new Plot("sens1", width/5*3-50, height/5);
   sens2 = new Plot("sens2", width/5*3-50, height/5);
   sens3 = new Plot("sens3", width/5*3-50, height/5);
+
+  barVisible = cp5.addToggle("barVisible")
+    .setPosition(0, height-100)
+    .setSize(100, 100)
+    .setValue(true)
+    ;
+  barVisible.getCaptionLabel()
+    .setText("BAR")
+    .setFont(createFont("Arial", 20))
+    .align(ControlP5.CENTER, ControlP5.CENTER);
+
+  mixerVisible = cp5.addToggle("mixerVisible")
+    .setPosition(width-100, height-100)
+    .setSize(100, 100)
+    .setValue(false)
+    ;
+  mixerVisible.getCaptionLabel()
+    .setText("MIXER")
+    .setFont(createFont("Arial", 20))
+    .align(ControlP5.CENTER, ControlP5.CENTER);
+
+  setupMixer();
+  hideMixer();
 
   frameRate(30);
 }
@@ -137,8 +162,10 @@ void draw() {
   //if (ampValue>0.7) t0=millis();
   //if (bd.isBeat()) t0=millis();
 
-  if (mainWindow) drawMainWindow();
-  else drawSensorWindow();
+  if (!mixerDrawable) {
+    if (mainWindow) drawMainWindow();
+    else drawSensorWindow();
+  } else drawMixer();
 }
 
 
@@ -147,7 +174,7 @@ void mousePressed() {
 }
 
 void drawMainWindow() {
-  if(frameCount%90 == 0) t0=millis();
+  if (frameCount%90 == 0) t0=millis();
   hint(ENABLE_DEPTH_TEST);
   pushMatrix();
   ball.setA0(200);
@@ -179,36 +206,10 @@ void drawMainWindow() {
   updatePixels();
   popMatrix();
   translate(width/2, height/2, 0);
-  
+
   ball.setColor(color(frameCount%255, 255, 200));
   ball.drawBall();
   time2=millis();
-  popMatrix();
-  hint(DISABLE_DEPTH_TEST);
-  
-}
-
-void drawSensorWindow() {
-  hint(ENABLE_DEPTH_TEST);
-
-  textFont(createFont("Arial", 50));
-  text("SENS 1", 50, height/4-50);
-  text("SENS 2", 50, height/2-50);
-  text("SENS 3", 50, height/4*3-50);
-  
-  
-  sens1.init(250, height/4-150);
-  sens2.init(250, height/2-150);
-  sens3.init(250, height/4*3-150);
-
-  sens1.update(sin(radians(frameCount))*50);
-  sens2.update(sin(radians(10*frameCount))*30);
-  sens3.update(sin(radians(20*frameCount))*40);
-  
-  pushMatrix();
-  translate(width-width/6, height/2);
-  ball.setA0(120);
-  ball.drawBall();
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
 }
@@ -225,4 +226,15 @@ void bpmSlider(int value) {
 
 void scales(int n) {
   whatScale = cp5.get(ScrollableList.class, "scales").getItem(n).get("text").toString();
+}
+
+void barVisible(boolean visible) {
+  checkbox.setVisible(visible);
+  println("visible: "+visible);
+}
+
+void mixerVisible(boolean visible) {
+  mixerDrawable = visible;
+  if (visible) showMixer();
+  else hideMixer();
 }
