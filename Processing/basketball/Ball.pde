@@ -1,3 +1,5 @@
+
+
 class Ball {
   float a0=200, b0=a0/2, a, b;
   float x, y, z, xH, zH, yV, zV;
@@ -27,10 +29,10 @@ class Ball {
     //  0, 0, 1,
     //  PI/2, 1);
     rotateY(radians(angleH));
-    setA(a0+5*sin(c));
+    //setA(a0+5*sin(c));
     //a = a0;
     //b = b0;
-    //setA(a0+50*ampValue);
+    setA(a0+50*ampValue);
     elipse.changeRadius(a+b);
     hor.changeRadius(a+b);
     vert.changeRadius(a+b);

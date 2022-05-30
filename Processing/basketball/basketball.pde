@@ -19,6 +19,8 @@ int hueBall = 150;
 float t0=0;
 int bpm0 = 100, bpm, bpmHistory;
 String whatScale, whatScaleHistory;
+AudioIn input;
+float ampValue = 1;
 
 //VOLUMES
 float mainVolume=0.5;
@@ -51,6 +53,10 @@ Plot sens1, sens2, sens3;
 Ball ball = new Ball();
 
 void setup() {
+  Sound s = new Sound(this);
+  Sound.list();
+  s.inputDevice(16);
+  
   fullScreen(P3D);
   colorMode(HSB);
   lights();
@@ -58,12 +64,17 @@ void setup() {
 
   cp5 = new ControlP5(this);
   buttons = cp5.addGroup("button menu");
-
+  
+    
+  // Create the Input stream
+  input = new AudioIn(this, 2);
+  //input.play();
+  
   //sf = new SoundFile(this, "SaponeLiquido.mp3");
   //sf.rate();
   //sf.loop();
-  //amp = new Amplitude(this);
-  //amp.input(sf);
+  amp = new Amplitude(this);
+  amp.input(input);
 
   //bd = new BeatDetector(this);
   //bd.input(sf);
@@ -144,10 +155,11 @@ void setup() {
 void draw() {
   //float ampValue = amp.analyze();
   background(0);
-
+  ampValue = amp.analyze();
+  //ball.setA(amp.analyze()*200);
   //if (ampValue>0.7) t0=millis();
   //if (bd.isBeat()) t0=millis();
-  
+  //println(amp.analyze());
   //osc part
   sendBPM();
   update();

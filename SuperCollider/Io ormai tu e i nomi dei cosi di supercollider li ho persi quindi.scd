@@ -1,15 +1,35 @@
 (
-Server.default.options.inDevice_("Microfono MacBook Pro");
-Server.default.options.outDevice_("Altoparlanti MacBook Pro");
+// Get the default server's options
+
+o = Server.default.options;
+
+// Post the number of output channels
+
+o.numOutputBusChannels.postln;
+
+// Set them to a new number
+
+o.numOutputBusChannels = 6; // The next time it boots, this will take effect
+
+// specify a device
+
+o.device ="7";     // use a specific soundcard
+Server.default.reboot;
+v = Volume.new(s,0,2);
+
 )
 
 (
-s.boot;
+Server.default.options.inDevice_("Dispositivo combinato");
+Server.default.options.outDevice_("Dispositivo combinato");
+)
+(
+s.reboot;
 v = Volume.new(s,0,2);
 )
 
 (
-v.volume = -20;
+v.volume = -10;
 
 ~scale = 13;
 ~patterns = [
@@ -56,13 +76,12 @@ v.volume = -20;
 ~hiHatDur = 1/2;
 ~numDrums = 2;
 ~numPattern =4;
+
 ~arp =1;
-
-
 ~ampKick = 0.8;
 ~ampSnare = 1;
 ~ampHiHat = 0.2;
-~ampChord = 0.4;
+~ampChord = 0.5;
 ~ampBass = 1;
 
 
@@ -91,7 +110,7 @@ v.volume = -20;
 
 ~ran = 7.rand;
 	Pdefn(\chord,Pseq([~chords[~ran]],inf));
-Pdefn(\arp,~arp);
+Pdefn(\ampArp,~arp);
 Pdefn(\patternNote,Pseq(~patterns[~numPattern][0],inf));
 Pdefn(\patternDur,Pseq(~patterns[~numPattern][1],inf));
 Pdefn(\arpNote,Pseq(~arpPatterns[~arpNum][0],inf));
@@ -99,6 +118,7 @@ Pdefn(\arpDur,Pseq(~arpPatterns[~arpNum][1],inf));
 
 Pdefn(\kickDur,~drums[0][~numDrums]);
 Pdefn(\hiHatDur, ~drums[1][~numDrums]);
+	"noci".postln;
 	TempoClock.default.tempo*2.wait;
 };
 
@@ -345,9 +365,10 @@ SynthDef(\bass, { |outbus, midinote = 42|
 OSCdef.new(\get_Arp,
 	{
 		arg msg, time, addr, port;
-		if(msg[1]<=0.0, {
-			postln("ARP 0");
+		if(msg[1]>=5.0, {
+			postln("ARP 5.0");
 			~arp= 0.0;
+			~arpNum = 0;
 		},{
 
 			postln("ARP NOT 0");
@@ -388,4 +409,14 @@ OSCdef.new(\get_BPM_set,
 	},
 	"/processing/SCControls/setBPM"
 );
+
+
+OSCdef.new(\get_main_volume,
+	{
+		arg msg, time, addr, port;
+		v.volume = msg[1];
+	},
+	"/processing/SCControls/setMainVolume"
+);
+
 )
