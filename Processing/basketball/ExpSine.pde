@@ -12,8 +12,8 @@ class ExpSine {
     this.freq = freq;
     float w =  width/2;
     this.xspacing = w/numPoints;
-    print("xspacing: ");
-    println(this.xspacing);
+    //print("xspacing: ");
+    //println(this.xspacing);
     this.amp = amp;
   }
 

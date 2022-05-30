@@ -59,7 +59,7 @@ class myLine {
       noFill();
       //stroke(255*i/numLines, 255, 255, 55 + 200*i/numLines);
       //stroke(0, 0, 255, 55 + 200*i/numLines);
-      stroke(map(i, 0, numLines, (hue(lineColor)-50), hue(lineColor)), saturation(lineColor), brightness(lineColor), 55 + 200*i/numLines);
+      stroke(hue(lineColor), map(i, 3, prevX.size(), saturation(lineColor)-100, saturation(lineColor)), brightness(lineColor), 55 + 200*i/numLines);
       strokeWeight(5+15*i/numLines);
 
       curve(
