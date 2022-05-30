@@ -23,7 +23,6 @@ int hueBall = 150;
 float t0=0;
 int bpm0 = 100, bpm, bpmHistory;
 String whatScale, whatScaleHistory;
-AudioIn input;
 float ampValue = 1;
 
 //VOLUMES
@@ -42,6 +41,7 @@ boolean bpmSliderVisible = false;
 
 float a0=200, b0=a0/2;
 
+AudioIn input;
 Amplitude amp;
 SoundFile sf;
 BeatDetector bd;
@@ -72,7 +72,7 @@ void setup() {
     
   // Create the Input stream
   input = new AudioIn(this, 2);
-  //input.play();
+  input.start();
   
   //sf = new SoundFile(this, "SaponeLiquido.mp3");
   //sf.rate();
