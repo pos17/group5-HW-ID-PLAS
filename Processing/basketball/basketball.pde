@@ -2,9 +2,9 @@ import processing.sound.*;
 import controlP5.*;
 import java.util.*;
 
-int activeColor = unhex("ffadff02");
-int foregroundColor = unhex("ff01befe");
-int backgroundColor = unhex("ff8f00ff");
+int activeColor = unhex("ff61ff17");
+int foregroundColor = unhex("ffff006d");
+int backgroundColor = unhex("ff8600EC");
 
 
 myLine elipse, vert, hor;
@@ -75,9 +75,9 @@ void setup() {
     .setSize(width/9*2, height/8)
     .setItemsPerRow(3)
     .setSpacingColumn(0)
-    .addItem("bpm", 0)
-    .addItem("scale", 0)
-    .addItem("sens", 0)
+    .addItem("tempo", 0)
+    .addItem("root note", 0)
+    .addItem("sensors", 0)
     .deactivateAll()
     .setGroup(buttons)
     .setColorActive(activeColor)
@@ -126,11 +126,13 @@ void setup() {
     .setColorForeground(foregroundColor)
     .setColorBackground(backgroundColor)
     ;
+
   scale.getValueLabel()
     .setFont(createFont("Arial", height/50))
     .align(ControlP5.CENTER, ControlP5.CENTER);
   scale.getCaptionLabel()
-    .setFont(createFont("Arial", height/50));
+    .setFont(createFont("Arial", height/50))
+    ;
 
   // BALL
   ball.initBall(80, height/6);

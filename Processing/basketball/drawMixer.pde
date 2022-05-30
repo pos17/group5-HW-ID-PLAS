@@ -1,5 +1,6 @@
 int muteColor = unhex("ffff7d00");
 int soloColor = unhex("ffffdd00");
+int bgColor = unhex("ff2D4A54");
 
 //Slider drumSli, bassSli, padSli, arpSli;
 Fader drumSli, bassSli, padSli, arpSli, masterSli;
@@ -41,7 +42,8 @@ void setupMixer() {
     .addItem("arpMute", 0)
     .setColorActive(muteColor)
     .setColorForeground(unhex("ffcc6300"))
-    .setColorBackground(unhex("ff020122"))
+    //.setColorBackground(unhex("ff020122"))
+    .setColorBackground(bgColor)
     ;
 
   for (int i=0; i<mutes.getItems().size(); i++) {
@@ -63,7 +65,8 @@ void setupMixer() {
     .addItem("arpSolo", 0)
     .setColorActive(soloColor)
     .setColorForeground(unhex("ffccb100"))
-    .setColorBackground(unhex("ff020122"))
+    //.setColorBackground(unhex("ff020122"))
+    .setColorBackground(bgColor)
     ;
 
 
@@ -183,7 +186,8 @@ class Fader {
       .setLabelVisible(false)
       .setColorActive(activeColor)
       .setColorForeground(unhex("ffff006d"))
-      .setColorBackground(unhex("ff020122"))
+      //.setColorBackground(unhex("ff020122"))
+      .setColorBackground(bgColor)
       ;
   }
 
