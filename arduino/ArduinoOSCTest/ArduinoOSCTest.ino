@@ -34,9 +34,9 @@ const int heartPin =  A1;
 //const int switchPin2 = 3;
 
 // LEDs must be connected to arduino PWM pins - see board pinout
-#define RED  5   // pin that red led is connected to    
-#define GREEN  3 // pin that green led is connected to     
-#define BLUE  4  // pin that blue led is connected to  
+#define RED  6   // pin that red led is connected to    
+#define GREEN  7 // pin that green led is connected to     
+#define BLUE  8  // pin that blue led is connected to  
 
 
 //value of shake
