@@ -6,7 +6,7 @@ int bgColor = unhex("ff2D4A54");
 Fader drumSli, bassSli, padSli, arpSli, masterSli;
 CheckBox mutes, solos;
 //float drumVol, bassVol, padVol, arpVol, masterVol;
-float[] volumes = {0, 0, 0, 0, 0};
+float[] volumes = {1, 1, 1, 1, 1};
 float[] muteMask = {1, 1, 1, 1};
 float[] soloMask = {0, 0, 0, 0};
 float[] channelVolumes = {0, 0, 0, 0, 0};
@@ -106,7 +106,7 @@ void drawMixer() {
   pushMatrix();
   translate(width-width/6, height/2);
   ball.setA0(100);
-  ball.drawBall();
+  ball.drawBall(map(sin(radians(frameCount)),-1,1,0,0.5));
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
 
@@ -232,6 +232,7 @@ class Fader {
     // Value label
     textSize(20);
     text(volume + " dB", xcenter, fader.getPosition()[1]+fader.getHeight()+30);
+    setVolume();
   }
 
   void show() {

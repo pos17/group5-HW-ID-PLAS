@@ -164,7 +164,8 @@ void oscEvent(OscMessage theOscMessage) {
       //println("volume val: ");
       //println(firstValue);
       mainVolume = firstValue;
-      setMainVolume();
+      channelVolumes[4] = mainVolume;
+      setVolume();
       return;
     }
   }
@@ -231,8 +232,8 @@ void update() {
     OscMessage myMessage = new OscMessage("/processing/SCControls/DrumVelocity");
     myMessage.add(value);
     // send the message
-    //println("SENDING OSC MESSAGE TO SC");
-    //println(value);
+    println("SENDING OSC MESSAGE TO SC");
+    println(value);
     oscP5.send(myMessage, myRemoteLocation);
     shakeResetTime = millis();
     shakesIter = 0;
@@ -252,8 +253,7 @@ void sendBPM() {
 }
 
 void setScale() {
-  if (whatScale== whatScaleHistory) {
-    int scaleValue = 0;
+  int scaleValue = 0;
     switch(whatScale) {
     case "C#":
       scaleValue = 1;
@@ -297,67 +297,17 @@ void setScale() {
     myMessage.add(scaleValue); /* add an int to the osc message */
     
     /* send the message */
-    println("sendingScale");
-    println(scaleValue);
+    //println("sendingScale");
+    //println(scaleValue);
     oscP5.send(myMessage, myRemoteLocation);
-    whatScaleHistory = whatScale;
-  }
 }
 
-void setMainVolume() {
-  float mainVolumeToSend = 60* mainVolume -60;
-  OscMessage myMessage = new OscMessage("/processing/SCControls/setMainVolume");
-  myMessage.add(mainVolumeToSend); /* add an int to the osc message */
+void setVolume() {
+  float[] channelVolumesToSend = channelVolumes;
+  OscMessage myMessage = new OscMessage("/processing/SCControls/setVolume");
+  myMessage.add(channelVolumesToSend); /* add an int to the osc message */
   /* send the message */
   //println("mainVolume");
-  //println(mainVolume);
-  oscP5.send(myMessage, myRemoteLocation);
-}
-void setKickVolume() {
-  OscMessage myMessage = new OscMessage("/processing/SCControls/setkickVolume");
-  myMessage.add(kickVolume); /* add an int to the osc message */
-  /* send the message */
-  println("kickVolume");
-  println(kickVolume);
-  oscP5.send(myMessage, myRemoteLocation);
-}
-void setSnareVolume() {
-  OscMessage myMessage = new OscMessage("/processing/SCControls/setMainVolume");
-  myMessage.add(snareVolume); /* add an int to the osc message */
-  /* send the message */
-  println("snareVolume");
-  println(snareVolume);
-  oscP5.send(myMessage, myRemoteLocation);
-}
-void setHihatVolume() {
-  OscMessage myMessage = new OscMessage("/processing/SCControls/setMainVolume");
-  myMessage.add(hihatVolume); /* add an int to the osc message */
-  /* send the message */
-  println("hihatVolume");
-  println(hihatVolume);
-  oscP5.send(myMessage, myRemoteLocation);
-}
-void setArpVolume() {
-  OscMessage myMessage = new OscMessage("/processing/SCControls/setMainVolume");
-  myMessage.add(arpVolume); /* add an int to the osc message */
-  /* send the message */
-  println("mainVolume");
-  println(mainVolume);
-  oscP5.send(myMessage, myRemoteLocation);
-}
-void setChordVolume() {
-  OscMessage myMessage = new OscMessage("/processing/SCControls/setMainVolume");
-  myMessage.add(chordVolume); /* add an int to the osc message */
-  /* send the message */
-  println("chordVolume");
-  println(chordVolume);
-  oscP5.send(myMessage, myRemoteLocation);
-}
-void setBassVolume() {
-  OscMessage myMessage = new OscMessage("/processing/SCControls/setMainVolume");
-  myMessage.add(bassVolume); /* add an int to the osc message */
-  /* send the message */
-  println("bassVolume");
-  println(bassVolume);
+  println("volumesend");
   oscP5.send(myMessage, myRemoteLocation);
 }

@@ -37,6 +37,7 @@ v.volume = -10;
 
 	[[36,39,36,36,34,32,31]+[~scale,~scale,~scale,~scale,~scale,~scale,~scale],[1/2,3/8,1/4,1/8,1/4,1/4,1/4]],
 
+
 	[[39,43,39,38,39,38,36]+[~scale,~scale,~scale,~scale,~scale,~scale,~scale],[1/8,5/8,1/8,3/8,1/4,1/4,1/4]],
 
 [[36,36,39,36,43,43,39,38]+[~scale,~scale,~scale,~scale,~scale,~scale,~scale,~scale],[1/4,1/4,1/4,1/8,3/8,1/4,1/4,1/4]],
@@ -253,7 +254,8 @@ SynthDef("juno3", {arg freq = 440, amp = 1, gate = 1, out=0, unison=1, cutoff=20
 }).add;
 
 
-SynthDef(\bass, { |outbus, midinote = 42|
+SynthDef(\bass, {
+	arg outbus=0, midinote = 42, amp=1;
   var freq = midinote.midicps;
   var subfreq = freq / 2;
 
@@ -297,8 +299,8 @@ SynthDef(\bass, { |outbus, midinote = 42|
   // Another resonant LPF
   sig = MoogFF.ar(sig, XLine.ar(freq*150, freq*30, 0.1), 0.1);
 
-  Out.ar(0, sig!2);
-	Out.ar(2, sig!2);
+  Out.ar(0, sig!2*amp);
+	Out.ar(2, sig!2*amp);
 }).add;
 
 
@@ -338,7 +340,7 @@ SynthDef(\bass, { |outbus, midinote = 42|
 	\rel, 0.22,
 	\sinfreq, 60,
 	\glissf, 0.9,
-	\amp, 0.8,
+	\amp, Pdefn(\ampKick),
 ).play;
 
 ~pSnare = Pbind(
@@ -383,6 +385,7 @@ OSCdef.new(\get_Arp,
 OSCdef.new(\get_Changes,
 	{
 		arg msg, time, addr, port;
+		postln("dRVEL");
 		postln(msg[1]);
 		~numDrums = msg[1];
 	},
@@ -411,12 +414,52 @@ OSCdef.new(\get_BPM_set,
 );
 
 
-OSCdef.new(\get_main_volume,
+OSCdef.new(\get_volumes,
 	{
 		arg msg, time, addr, port;
-		v.volume = msg[1];
+		var volDrums, volBass, volArp, volChord,volMain;
+		postln("DRUM");
+		postln(msg[1]);
+		volDrums = msg[1]/2;
+		~ampHiHat = volDrums;
+		~ampKick = volDrums;
+		~ampSnare = volDrums;
+		Pdefn(\ampKick,~ampKick);
+		Pdefn(\ampSnare,~ampSnare);
+		Pdefn(\ampHiHat,~ampHiHat);
+		postln("BASS");
+		postln(msg[2]);
+		volBass = msg[2]/2;
+		~ampBass = volBass;
+		Pdefn(\ampBass,~ampBass);
+		postln("CHORD");
+		postln(msg[3]);
+		volChord = msg[3]/2;
+		~ampChord = volChord;
+		Pdefn(\ampChord,~ampChord);
+		postln("ARP");
+		postln(msg[4]);
+		volArp = msg[4]/2;
+		~arp = volArp;
+		Pdefn(\ampArp,~arp);
+		postln("MAIN");
+		postln(msg[5]);
+		v.volume = msg[5].ampdb;
+
 	},
-	"/processing/SCControls/setMainVolume"
+	"/processing/SCControls/setVolume"
 );
+
+OSCdef.new(\get_scale_value,
+	{
+		arg msg, time, addr, port;
+		~scale = msg[1];
+		postln("scale");
+		postln(~scale);
+	},
+	"/processing/SCControls/setScale"
+);
+
+
 
 )

@@ -27,8 +27,8 @@ void drawSensorWindow() {
     rect(wx, wy, 5, 2);
   }
   pushMatrix();
-  ball.setA0(120);
-  ball.drawBall();
+  ball.setA0(width/14);
+  ball.drawBall(0);
   popMatrix();
   popMatrix();
   hint(DISABLE_DEPTH_TEST);

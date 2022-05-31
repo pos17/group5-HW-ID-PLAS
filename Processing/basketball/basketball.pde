@@ -22,7 +22,7 @@ int amplitude =20, numLines=80, speedBall=1, randomness=0;
 int hueBall = 150;
 float t0=0;
 int bpm0 = 100, bpm, bpmHistory;
-String whatScale, whatScaleHistory;
+String whatScale;
 float ampValue = 1;
 
 //VOLUMES
@@ -58,8 +58,8 @@ Ball ball = new Ball();
 void setup() {
   Sound s = new Sound(this);
   Sound.list();
-  s.inputDevice(16);
-  
+  s.inputDevice(14);
+
   fullScreen(P3D);
   //size(800, 600, P3D);
   colorMode(HSB);
@@ -68,18 +68,19 @@ void setup() {
 
   cp5 = new ControlP5(this);
   buttons = cp5.addGroup("button menu");
-  
-    
+
+
   // Create the Input stream
   input = new AudioIn(this, 2);
-  input.start();
-  
+  //input.start();
+
   //sf = new SoundFile(this, "SaponeLiquido.mp3");
   //sf.rate();
   //sf.loop();
   amp = new Amplitude(this);
   amp.input(input);
-
+  println("DONE!!");
+  println(amp.analyze());
   //bd = new BeatDetector(this);
   //bd.input(sf);
   //bd.sensitivity(300);
@@ -129,7 +130,7 @@ void setup() {
     .setPadding(10, 10);
 
   // SCROLLABLE LIST
-  List scales = Arrays.asList("C", "C#", "D", "D#", "E", "E#", "F", "G", "G#", "A", "A#", "B");
+  List scales = Arrays.asList("C", "C#", "D", "D#", "E", "F","F#", "G", "G#", "A", "A#", "B");
   scale = cp5.addScrollableList("scales")
     .setPosition(width/9*2+width/6, height/8*6)
     //.setPosition(0, 0)
@@ -195,18 +196,19 @@ void setup() {
 }
 
 void draw() {
-  //float ampValue = amp.analyze();
+  //ampValue = amp.analyze();
   background(0);
-  ampValue = amp.analyze();
   //ball.setA(amp.analyze()*200);
   //if (ampValue>0.7) t0=millis();
   //if (bd.isBeat()) t0=millis();
+  //println("AMP");
   //println(amp.analyze());
   //osc part
   sendBPM();
   update();
   setScale();
-  
+  //println("ampanalize");
+  //println(amp.analyze());
   //if (mainWindow) drawMainWindow();
   //else drawSensorWindow();
 
@@ -237,6 +239,7 @@ void mousePressed() {
 
 void drawMainWindow() {
   if (frameCount%90 == 0) t0=millis();
+  ampValue = amp.analyze();
   hint(ENABLE_DEPTH_TEST);
   pushMatrix();
   ball.setA0(200);
@@ -270,7 +273,7 @@ void drawMainWindow() {
   translate(width/2, height/2, 0);
 
   ball.setColor(color(frameCount%255, 255, 255));
-  ball.drawBall();
+  ball.drawBall(ampValue);
   time2=millis();
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
@@ -278,6 +281,7 @@ void drawMainWindow() {
 
 void checkBox(float []a) {
   bpmSlider.setVisible(a[0]==1);
+  if(a[0]==1) bpmSlider.bringToFront();
   scale.setVisible(a[1]==1);
   if (a[1]==1) scale.bringToFront();
   mainWindow = a[2]==0;
@@ -289,6 +293,7 @@ void bpmSlider(int value) {
 
 void scales(int n) {
   whatScale = cp5.get(ScrollableList.class, "scales").getItem(n).get("text").toString();
+  setScale();
 }
 
 void barVisible(boolean visible) {

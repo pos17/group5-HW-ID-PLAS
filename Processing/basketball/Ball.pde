@@ -21,7 +21,7 @@ class Ball {
     this.b0 = a0/2;
   }
 
-  void drawBall() {
+  void drawBall(float ampValue) {
     pushMatrix();
     //translate(width/2, height/2, 0);
     //spotLight(255, 255, 255,
