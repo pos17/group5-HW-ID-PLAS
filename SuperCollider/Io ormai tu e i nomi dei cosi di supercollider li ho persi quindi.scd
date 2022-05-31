@@ -32,6 +32,7 @@ v = Volume.new(s,0,2);
 v.volume = -1;
 
 ~scale = 13;
+
 ~patterns = [
 	[[0,36,36,39,39,38,34,31]+[0,~scale,~scale,~scale,~scale,~scale,~scale,~scale],[1/8,1/4,3/8,1/4,1/4,3/8,1/8,1/4]],
 
@@ -85,17 +86,19 @@ v.volume = -1;
 ~ampChord = 0.5;
 ~ampBass = 1;
 
-
+//----------------------------------------------
+~iter = 0;
 ~f = {
+
 ~patterns = [
-	[[0,36,36,39,39,38,34,31]+[0,~scale,~scale,~scale,~scale,~scale,~scale,~scale],[1/8,1/4,3/8,1/4,1/4,3/8,1/8,1/4]],
+ [[0,36,36,39,39,38,34,31]+[0,~scale,~scale,~scale,~scale,~scale,~scale,~scale],[1/8,1/4,3/8,1/4,1/4,3/8,1/8,1/4]],
 
-	[[36,39,36,36,34,32,31]+[~scale,~scale,~scale,~scale,~scale,~scale,~scale],[1/2,3/8,1/4,1/8,1/4,1/4,1/4]],
+ [[36,39,36,36,34,32,31]+[~scale,~scale,~scale,~scale,~scale,~scale,~scale],[1/2,3/8,1/4,1/8,1/4,1/4,1/4]],
 
-	[[39,43,39,38,39,38,36]+[~scale,~scale,~scale,~scale,~scale,~scale,~scale],[1/8,5/8,1/8,3/8,1/4,1/4,1/4]],
+ [[39,43,39,38,39,38,36]+[~scale,~scale,~scale,~scale,~scale,~scale,~scale],[1/8,5/8,1/8,3/8,1/4,1/4,1/4]],
 
 [[36,36,39,36,43,43,39,38]+[~scale,~scale,~scale,~scale,~scale,~scale,~scale,~scale],[1/4,1/4,1/4,1/8,3/8,1/4,1/4,1/4]],
-	[[36,36,36,36,36,36,39,38,39]+[~scale,~scale,~scale,~scale,~scale,~scale,~scale,~scale,~scale],[1/4,1/4,1/4,1/4,1/4,1/4,1/8,1/4,1/8]]
+ [[36,36,36,36,36,36,39,38,39]+[~scale,~scale,~scale,~scale,~scale,~scale,~scale,~scale,~scale],[1/4,1/4,1/4,1/4,1/4,1/4,1/8,1/4,1/8]]
 ];
 
 
@@ -105,23 +108,35 @@ v.volume = -1;
 
 ~arpPatterns3 = [[[46,43,39,36]+[~scale+12,~scale+12,~scale+12,~scale+12],[3/4,1/2,1/4,1/2]],[[36,36,36,43,39,46]+[~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12],[3/8,1/4,1/4,1/2,1/2,1/8]],[[39,43,36,39,36,38,39,48,46,36,39,39,39,48]+[~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12],[1/6,1/6,1/6,1/6,3/36,3/36,1/6,1/6,3/36,3/36,1/6,1/6,1/6,1/6]],[[36,48,36,48,36,48]+[~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12], [1/8,1/8,1/8,1/8,1/8,1/8,1/8,1/8]]];
 
+~chords = [[36,39,43]+[~scale,~scale,~scale], [38,41,45]+[~scale,~scale,~scale], [39,43,46]+[~scale,~scale,~scale], [41,44,48]+[~scale,~scale,~scale],[31,34,38]+[~scale,~scale,~scale],[32,36,39]+[~scale,~scale,~scale],[34,38,41]+[~scale,~scale,~scale]];
+
+~chordPatterns = [[~chords[0],~chords[6],~chords[5],~chords[4]],[~chords[0],~chords[3],~chords[6],~chords[2]],[~chords[5],~chords[6],~chords[0],~chords[6]],[~chords[0],~chords[6],~chords[5],~chords[6]],[~chords[0],~chords[3],~chords[5],~chords[4]]];
+
+
 ~arpPatterns2 = [~arpPatterns1,~arpPatterns2,~arpPatterns3];
 
-	~arpPatterns = ~arpPatterns2[3.rand];
+ ~arpPatterns = ~arpPatterns2[3.rand];
 
-~ran = 7.rand;
-	Pdefn(\chord,Pseq([~chords[~ran]],inf));
-Pdefn(\ampArp,~arp);
+~ran = 5.rand;
+ Pdefn(\chord,Pseq([~chordPatterns[~ran][~iter]],inf));
+Pdefn(\arp,~arp);
 Pdefn(\patternNote,Pseq(~patterns[~numPattern][0],inf));
 Pdefn(\patternDur,Pseq(~patterns[~numPattern][1],inf));
 Pdefn(\arpNote,Pseq(~arpPatterns[~arpNum][0],inf));
 Pdefn(\arpDur,Pseq(~arpPatterns[~arpNum][1],inf));
+if( 1000.rand == 1,{
+Pdefn(\arpNote,Pseq([36,36,48,43,42,41,39,36,39,41]+[~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12,~scale+12],inf));
+  Pdefn(\arpDur,Pseq([1/8,1/8,1/4,3/8,1/4,1/4,1/4,1/8,1/8,1/8],inf));
+ });
 
 Pdefn(\kickDur,~drums[0][~numDrums]);
 Pdefn(\hiHatDur, ~drums[1][~numDrums]);
-	"noci".postln;
-	TempoClock.default.tempo*2.wait;
+
+~iter = ~iter +1;
+ if( ~iter == 4,{~iter = 0});
+ TempoClock.default.tempo*2.wait;
 };
+//---------------------
 
 t = Task({ ~f.loop });
 t.start;

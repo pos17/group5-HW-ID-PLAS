@@ -21,7 +21,7 @@ float shakeResetTime = millis();
 float shakeResetDelay = 1500;
 
 float shakeValResetTime = millis();
-float shakeValResetDelay = 1/frameRate*1000;
+float shakeValResetDelay = 1/frameRate*2*1000;
 
 /* gyroscope values*/
 float yaw =1;
@@ -145,8 +145,8 @@ void oscEvent(OscMessage theOscMessage) {
       /* parse theOscMessage and extract the values from the osc message arguments. */
       float firstValue = theOscMessage.get(0).intValue();  // get the first osc argument
       shakesIter += firstValue;
-      
-      shakeValue = -map(firstValue,0,1,0,sens1.getHeight()); 
+
+      shakeValue = -map(firstValue, 0, 1, 0, sens1.getHeight());
       shakeValResetTime = millis();
       //handData=-map(firstValue, 0, 1, 0, sens1.getHeight());
       println("ARRIVA OSC");
