@@ -100,14 +100,16 @@ void oscEvent(OscMessage theOscMessage) {
       float firstValue = theOscMessage.get(0).floatValue();  // get the first osc argument
       yaw = firstValue;
       int valToSend = 0;
-      if (yaw <-90) {
+      if (yaw <-108) {
         valToSend=0;
-      } else if (yaw <0) {
+      } else if (yaw <-36) {
         valToSend=1;
-      } else if (yaw <90) {
+      } else if (yaw <36) {
         valToSend=2;
-      } else if (yaw <180) {
+      } else if (yaw <108) {
         valToSend=3;
+      } else {
+        valToSend=4;
       }
       gyrData = -map(yaw, -180, 180, 0, sens3.getHeight());
       if (valToSend!=valToSendHistory) {
