@@ -6,6 +6,8 @@
   - [Project Description](#project-description)
   - [Getting Started](#getting-started)
   - [Usage](#usage)
+  - [Processing GUI](#processing-gui)
+  - [ARDUINO](#arduino)
   - [Folder Structure](#folder-structure)
   - [Notes](#notes)
   - [Components](#components)
@@ -36,9 +38,9 @@ In order to start the system on your own Computer:
    -  Supercollider
 7. Run the file clicking on the *PLAY BUTTON*, (MACOS: cmd+R, Windows: ctrl+R)
 8. Open the file basketball.scd inside the folder *SuperCollider*
-9.  In the .scd file run the main code section (MACOS: cmd+enter, Windows: ctrl+enter) 
+9.  In the .scd file run the main code section (MACOS: cmd+enter, Windows: ctrl+enter)
 10. Install the [Multisense OSC](https://play.google.com/store/apps/details?id=edu.polytechnique.multisense.release&hl=en_US&gl=US) application on a smartphone device. 
-11. ENJOY!! 
+11.  
 
 
 
@@ -46,20 +48,43 @@ In order to start the system on your own Computer:
 
 1. Start the Multisense App on the Smartphone and set the correct IP address and port for the PC used as central device.
 2. Position the shake sensor connected to the arduino on the dominant hand used by the player and Turn the Arduino on.  
-3. Launch Supercollider and Processing scripts as explained. 
-4.   
+3. Launch Supercollider and Processing scripts. 
+4. ENJOY!!
+
+## Processing GUI
+
+The Processing allows the user control some parameters of the CMS in order to manipulate its behaviour.
+In particular the available parameters are: 
+1. TEMPO: used to speed-up or slow-down 
+2. ROOT NOTE: used to select the tonality of the generated music.
+
+![](./gitAssets/mainwindow.jpg)
+
+The mixer view allows the user to modify the volumes of the instruments generated in SuperCollider, to mute and to solo them.
+
+![](./gitAssets/mixer.jpg)
+
+Choosing the "sensors" button allows to open the page where the values of the sensors are plotted. 
+
+![](./gitAssets/senswindow.jpg)
+
+## ARDUINO 
+The Arduino device is used to both transmit the data acquired by the shake sensor and to control the volume of the system 
+
+![](./gitAssets/ARDUINO.jpg)
+
+After some tests the best position used to mount the system resulted to be the one showed in the picture below.
+
+
+![](./gitAssets/guardaComeSonoFigo.jpg)
 
 ## Folder Structure
 
-The project repository contains one Projucer file that contains the main project setup with builds for:
-* VISUAL STUDIO 22 
-* VISUAL STUDIO 19
-* XCODE
-The projucer file stores two folders:
-* "Source" containing the Source code for building the plugin.
-* "Assets" containing the images used for the GUI.
-* "pointers" contains the images used as pointers for the panner window.
-* "gitAssets" contains all the images used in the report and in the README.
+The repository contains 4 principal folders:
+* "arduino" containing the Source code for arduino.
+* "Processing" containing the Source code for GUI.
+* "SuperCollider" containing the computer Music Engine.
+* "gitAssets" contains the images used in the report and in the README.
 
 
 ## Notes
