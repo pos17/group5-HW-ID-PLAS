@@ -20,6 +20,9 @@ float accMagDelay = 500;
 float shakeResetTime = millis();
 float shakeResetDelay = 1500;
 
+float shakeValResetTime = millis();
+float shakeValResetDelay = 1/frameRate*1000;
+
 /* gyroscope values*/
 float yaw =1;
 
@@ -38,6 +41,7 @@ FloatList accMagList = new FloatList();
 /* Handling handshake rate*/
 int shakesIter = 0;
 int shakesLimit = 3;
+float shakeValue = 0;
 
 
 OscP5 oscP5;
@@ -68,7 +72,7 @@ void oscEvent(OscMessage theOscMessage) {
       float firstValue = theOscMessage.get(0).floatValue();  // get the first osc argument
       accX = firstValue;
       setAccMag(accX, accY, accZ);
-      println("new value found");
+      //println("new value found");
       return;
     }
   } else if (theOscMessage.checkAddrPattern("/multisense/accelerometer/y")==true) {
@@ -105,6 +109,7 @@ void oscEvent(OscMessage theOscMessage) {
       } else if (yaw <180) {
         valToSend=3;
       }
+      gyrData = -map(yaw, -180, 180, 0, sens3.getHeight());
       if (valToSend!=valToSendHistory) {
         OscMessage myMessage = new OscMessage("/processing/SCControls/changingPattern");
         myMessage.add(valToSend); /* add an int to the osc message */
@@ -140,6 +145,10 @@ void oscEvent(OscMessage theOscMessage) {
       /* parse theOscMessage and extract the values from the osc message arguments. */
       float firstValue = theOscMessage.get(0).intValue();  // get the first osc argument
       shakesIter += firstValue;
+      
+      shakeValue = -map(firstValue,0,1,0,sens1.getHeight()); 
+      shakeValResetTime = millis();
+      //handData=-map(firstValue, 0, 1, 0, sens1.getHeight());
       println("ARRIVA OSC");
       /*
       if (shakesIter>=shakesLimit) {
@@ -165,6 +174,7 @@ void oscEvent(OscMessage theOscMessage) {
       //println(firstValue);
       mainVolume = firstValue;
       channelVolumes[4] = mainVolume;
+      masterSli.setValue(mainVolume);
       //setVolume();
       return;
     }
@@ -173,7 +183,7 @@ void oscEvent(OscMessage theOscMessage) {
 
 
 void setAccMag(float x, float y, float z) {
-  println("accMag");
+  //println("accMag");
   float valueToSend =0.0;
   float accMag = sqrt(pow(x, 2)+pow(y, 2)+pow(z, 2));
   accMagList.append(accMag);
@@ -185,33 +195,34 @@ void setAccMag(float x, float y, float z) {
     accMag += accMagList.get(i);
   }
   accMag /= accMagList.size();
+  accData = -map(pow(accMag, 2), 0, pow(40, 2), 0, sens2.getHeight());
   if (accMag>10 && accMag<15) {
     ball.setSpeed(1);
     valueToSend = 0.0;
-    println(accMag);
+    //println(accMag);
   } else if (accMag>=15 && accMag<20) {
     ball.setSpeed(2);
     valueToSend = 1.0;
-    println(accMag);
+    //println(accMag);
   } else if (accMag>=20 && accMag<25) {
     ball.setSpeed(3);
     valueToSend = 2.0;
-    println(accMag);
+    //println(accMag);
   } else if (accMag>=25) {
     ball.setSpeed(4);
     valueToSend = 3.0;
-    println(accMag);
+    //println(accMag);
   } else {
     ball.setSpeed(0);
     valueToSend = 5.0;
-    println(accMag);
+    //println(accMag);
   }
   if (millis() - accMagTime >accMagDelay ) {
     OscMessage myMessage = new OscMessage("/processing/SCControls/ArpONOFF");
     myMessage.add(valueToSend); /* add an int to the osc message */
     /* send the message */
-    println("sendingArp");
-    println(valueToSend);
+    //println("sendingArp");
+    //println(valueToSend);
     oscP5.send(myMessage, myRemoteLocation);
     accMagTime=millis();
   }
@@ -254,52 +265,52 @@ void sendBPM() {
 
 void setScale() {
   int scaleValue = 0;
-    switch(whatScale) {
-    case "C#":
-      scaleValue = 1;
-      break;
-    case "D":
-      scaleValue = 2;
-      break;
-    case "D#":
-      scaleValue = 3;
-      break;
-    case "E":
-      scaleValue = 4;
-      break;
-    case "F":
-      scaleValue = 5;
-      break;
-    case "F#":
-      scaleValue = 6;
-      break;
-    case "G":
-      scaleValue = 7;
-      break;
-    case "G#":
-      scaleValue = 8;
-      break;
-    case "A":
-      scaleValue = 9;
-      break;
-    case "A#":
-      scaleValue = 10;
-      break;
-    case "B":
-      scaleValue = 11;
-      break;
-    case "C":
-      scaleValue = 12;
-      break;
-    }
+  switch(whatScale) {
+  case "C#":
+    scaleValue = 1;
+    break;
+  case "D":
+    scaleValue = 2;
+    break;
+  case "D#":
+    scaleValue = 3;
+    break;
+  case "E":
+    scaleValue = 4;
+    break;
+  case "F":
+    scaleValue = 5;
+    break;
+  case "F#":
+    scaleValue = 6;
+    break;
+  case "G":
+    scaleValue = 7;
+    break;
+  case "G#":
+    scaleValue = 8;
+    break;
+  case "A":
+    scaleValue = 9;
+    break;
+  case "A#":
+    scaleValue = 10;
+    break;
+  case "B":
+    scaleValue = 11;
+    break;
+  case "C":
+    scaleValue = 12;
+    break;
+  }
 
-    OscMessage myMessage = new OscMessage("/processing/SCControls/setScale");
-    myMessage.add(scaleValue); /* add an int to the osc message */
-    
-    /* send the message */
-    //println("sendingScale");
-    //println(scaleValue);
-    oscP5.send(myMessage, myRemoteLocation);
+  OscMessage myMessage = new OscMessage("/processing/SCControls/setScale");
+  myMessage.add(scaleValue); /* add an int to the osc message */
+
+  /* send the message */
+  //println("sendingScale");
+  //println(scaleValue);
+  oscP5.send(myMessage, myRemoteLocation);
 }
 
 void setVolume() {
@@ -308,6 +319,6 @@ void setVolume() {
   myMessage.add(channelVolumesToSend); /* add an int to the osc message */
   /* send the message */
   //println("mainVolume");
-  println("volumesend");
+  //println("volumesend");
   oscP5.send(myMessage, myRemoteLocation);
 }

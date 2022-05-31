@@ -1,4 +1,5 @@
 Plot sens1, sens2, sens3;
+float accData=0, gyrData=0, handData=0;
 
 void drawSensorWindow() {
   pushMatrix();
@@ -9,9 +10,18 @@ void drawSensorWindow() {
   sens2.init(200, height/2-150);
   sens3.init(200, height/4*3-150);
 
-  sens1.update(sin(radians(frameCount))*50);
-  sens2.update(sin(radians(10*frameCount))*30);
-  sens3.update(sin(radians(20*frameCount))*40);
+  //sens1.update(sin(radians(frameCount))*50);
+  //sens2.update(sin(radians(10*frameCount))*30);
+  //sens3.update(sin(radians(20*frameCount))*40);
+  
+  if(millis()-shakeValResetTime > shakeValResetDelay) {
+    shakeValue = 0;
+    shakeValResetTime = millis();
+  }
+  
+  sens1.update(shakeValue);
+  sens2.update(accData);
+  sens3.update(gyrData);
   
   pushMatrix();
   translate(width-width/6, height/2);  

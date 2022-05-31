@@ -130,7 +130,7 @@ void setup() {
     .setPadding(10, 10);
 
   // SCROLLABLE LIST
-  List scales = Arrays.asList("C", "C#", "D", "D#", "E", "F","F#", "G", "G#", "A", "A#", "B");
+  List scales = Arrays.asList("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B");
   scale = cp5.addScrollableList("scales")
     .setPosition(width/9*2+width/6, height/8*6)
     //.setPosition(0, 0)
@@ -159,9 +159,9 @@ void setup() {
   // BALL
   ball.initBall(80, height/6);
 
-  sens1 = new Plot("SENS1", width/5*3-70, height/5);
-  sens2 = new Plot("SENS2", width/5*3-70, height/5);
-  sens3 = new Plot("SENS3", width/5*3-70, height/5);
+  sens1 = new Plot("SHAKE", width/5*3-70, height/5);
+  sens2 = new Plot("ACCEL", width/5*3-70, height/5);
+  sens3 = new Plot("GYROS", width/5*3-70, height/5);
 
   barVisible = cp5.addToggle("barVisible")
     .setPosition(0, height-100)
@@ -192,6 +192,9 @@ void setup() {
   setupMixer();
   hideMixer();
 
+  setVolume();
+
+
   frameRate(30);
 }
 
@@ -203,6 +206,8 @@ void draw() {
   //if (bd.isBeat()) t0=millis();
   //println("AMP");
   //println(amp.analyze());
+
+
   //osc part
   sendBPM();
   update();
@@ -230,6 +235,11 @@ void draw() {
     showMixer();
     drawMixer();
   }
+  drumSli.update();
+  bassSli.update();
+  padSli.update();
+  arpSli.update();
+  masterSli.update();
 }
 
 
@@ -281,7 +291,7 @@ void drawMainWindow() {
 
 void checkBox(float []a) {
   bpmSlider.setVisible(a[0]==1);
-  if(a[0]==1) bpmSlider.bringToFront();
+  if (a[0]==1) bpmSlider.bringToFront();
   scale.setVisible(a[1]==1);
   if (a[1]==1) scale.bringToFront();
   mainWindow = a[2]==0;

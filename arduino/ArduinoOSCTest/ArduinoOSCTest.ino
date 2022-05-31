@@ -316,10 +316,13 @@ void checkBloodPressure() {
 void setVolume() {
   volumeVal = analogRead(potPin);
   if (millis() - volTime > VOLDELAY) {
-    if (volumeVal != volumeValHistory) {
+    boolean enter = false; 
+    if(abs(volumeVal- volumeValHistory) > 10){ enter = true;}
+      //if (volumeVal != volumeValHistory) {
+    if (enter) {
       if(volumeVal <10) volumeVal = 0;
       float volToSend = 0;
-      volToSend = volumeVal / 512;
+      volToSend = (volumeVal *1.5)/ 1024;
       OSCMessage msg("/arduino/volume/val");
       SerialUSB.println("VOL SET");
       SerialUSB.println(volToSend);

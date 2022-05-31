@@ -12,7 +12,7 @@ CheckBox mutes, solos;
 float[] volumes = {1, 1, 1, 1, 1};
 float[] muteMask = {1, 1, 1, 1};
 float[] soloMask = {0, 0, 0, 0};
-float[] channelVolumes = {0, 0, 0, 0, 0};
+float[] channelVolumes = {1, 1, 1, 1, 1};
 
 int sliderPaddingX = 100, labelPaddingY = 20;
 int sliderPaddingY=120;
@@ -81,7 +81,6 @@ void setupMixer() {
       .align(ControlP5.CENTER, ControlP5.CENTER);
   }
 
-  setVolume();
 }
 
 
@@ -102,12 +101,9 @@ void drawMixer() {
   }
   popMatrix();
 
-  drumSli.update();
-  bassSli.update();
-  padSli.update();
-  arpSli.update();
-  masterSli.update();
-  masterSli.setValue(0.5);
+  
+  
+  //masterSli.setValue(0.5);
 
   pushMatrix();
   translate(width-width/6, height/2);
@@ -201,8 +197,9 @@ class Fader {
     float val = cp5.getController(name).getValue();
     //double vol =  20*Math.log10((double)map(val/3, 0, 4, 0.0001, 4));
     double vol =  20*Math.log10((double)map(val/2, 0, 3, 0.0001, 3));
-    vol = round((float)vol*100)/100;
-    return (float)vol;
+    float a = (float)vol;
+    a = (float)round(a*100)/100;
+    return a;
   }
 
   int getWidth() {
@@ -227,17 +224,17 @@ class Fader {
   void setValue(float theVal) {
     double val = constrain(theVal, 0.0001, 1.5);
     volumes[id] = (float)val;
-    println("val: "+val);
+    //println("val: "+val);
     
     double vol1 = 20*Math.log10(val);
-    println("vol_1: "+vol1);
+    //println("vol_1: "+vol1);
     
     float vol = (float)vol1;
     vol = pow(10, vol/20);
-    println("vol_2: "+vol);
+    //println("vol_2: "+vol);
     
     float faderVal = map(vol, 0, 1.5, 0, 3);
-    println("faderVal: "+faderVal  );
+    //println("faderVal: "+faderVal  );
     
     fader.setValue(faderVal);
   };
@@ -246,7 +243,8 @@ class Fader {
     volumes[id] = pow(10, getVolume()/20);
     float xcenter = fader.getPosition()[0]+fader.getWidth()/2;
     String volume = String.valueOf(getVolume());
-
+  
+    if(fader.isVisible()){
     // Name Label
     textAlign(CENTER);
     //textFont(arial);
@@ -257,7 +255,8 @@ class Fader {
     // Value label
     textSize(20);
     text(volume + " dB", xcenter, fader.getPosition()[1]+fader.getHeight()+30);
-    //setVolume();
+    }
+    setVolume();
   }
 
   void show() {
