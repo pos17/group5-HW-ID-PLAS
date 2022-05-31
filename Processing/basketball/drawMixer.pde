@@ -1,3 +1,5 @@
+import java.lang.Math;
+
 int muteColor = unhex("ffff7d00");
 int soloColor = unhex("ffffdd00");
 int bgColor = unhex("ff2D4A54");
@@ -6,6 +8,7 @@ int bgColor = unhex("ff2D4A54");
 Fader drumSli, bassSli, padSli, arpSli, masterSli;
 CheckBox mutes, solos;
 //float drumVol, bassVol, padVol, arpVol, masterVol;
+
 float[] volumes = {1, 1, 1, 1, 1};
 float[] muteMask = {1, 1, 1, 1};
 float[] soloMask = {0, 0, 0, 0};
@@ -77,6 +80,8 @@ void setupMixer() {
       .setFont(createFont("Arial", 30))
       .align(ControlP5.CENTER, ControlP5.CENTER);
   }
+
+  setVolume();
 }
 
 
@@ -102,11 +107,12 @@ void drawMixer() {
   padSli.update();
   arpSli.update();
   masterSli.update();
+  masterSli.setValue(0.5);
 
   pushMatrix();
   translate(width-width/6, height/2);
   ball.setA0(100);
-  ball.drawBall(map(sin(radians(frameCount)),-1,1,0,0.5));
+  ball.drawBall(map(sin(radians(frameCount)), -1, 1, 0, 0.5));
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
 
@@ -180,8 +186,8 @@ class Fader {
     name = theName;
     fader = cp5.addSlider(name)
       .setSize(width/16, height/4*2)
-      .setRange(0, 4)
-      .setValue(3)
+      .setRange(0, 3)
+      .setValue(2)
       .setSliderMode(Slider.FLEXIBLE)
       .setLabelVisible(false)
       .setColorActive(activeColor)
@@ -193,9 +199,10 @@ class Fader {
 
   float getVolume() {
     float val = cp5.getController(name).getValue();
-    float vol = 20*log(map(val/3, 0, 4, 0.0001, 4));
-    vol = (float)round(vol*100)/100;
-    return vol;
+    //double vol =  20*Math.log10((double)map(val/3, 0, 4, 0.0001, 4));
+    double vol =  20*Math.log10((double)map(val/2, 0, 3, 0.0001, 3));
+    vol = round((float)vol*100)/100;
+    return (float)vol;
   }
 
   int getWidth() {
@@ -216,6 +223,24 @@ class Fader {
     //textSize(30);
     //text(name, fader.getPosition()[0]+fader.getWidth()/2, fader.getPosition()[1]-labelPaddingY);
   }
+
+  void setValue(float theVal) {
+    double val = constrain(theVal, 0.0001, 1.5);
+    volumes[id] = (float)val;
+    println("val: "+val);
+    
+    double vol1 = 20*Math.log10(val);
+    println("vol_1: "+vol1);
+    
+    float vol = (float)vol1;
+    vol = pow(10, vol/20);
+    println("vol_2: "+vol);
+    
+    float faderVal = map(vol, 0, 1.5, 0, 3);
+    println("faderVal: "+faderVal  );
+    
+    fader.setValue(faderVal);
+  };
 
   void update() {
     volumes[id] = pow(10, getVolume()/20);
