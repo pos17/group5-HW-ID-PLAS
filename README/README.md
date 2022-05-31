@@ -44,9 +44,10 @@ In order to start the system on your own Computer:
 
 ## Usage
 
-1. Start the Multisense App on the Smartphone. 
+1. Start the Multisense App on the Smartphone and set the correct IP address and port for the PC used as central device.
 2. Position the shake sensor connected to the arduino on the dominant hand used by the player and Turn the Arduino on.  
-3. 
+3. Launch Supercollider and Processing scripts as explained. 
+4.   
 
 ## Folder Structure
 
