@@ -344,7 +344,11 @@ void setLedVal(int ledIn) {
   int ledToPut = (255*ledIn)/1023;
   int outLedToPut = 255-ledToPut;
   if(outLedToPut<0) outLedToPut = 0;
-  if(outLedToPut>255) outLedToPut = 255;
+  if(outLedToPut>250) { 
+    outLedToPut = 250;
+    ledToPut = 5;
+    }
+  
   WiFiDrv::analogWrite(25, 0);
   digitalWrite(RED, 1);
   WiFiDrv::analogWrite(26, ledToPut);
