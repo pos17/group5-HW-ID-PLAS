@@ -71,19 +71,16 @@ void setup() {
 
 
   // Create the Input stream
-  input = new AudioIn(this, 2);
-  //input.start();
+  input = new AudioIn(this, 0);
+  input.start();
 
-  //sf = new SoundFile(this, "SaponeLiquido.mp3");
-  //sf.rate();
-  //sf.loop();
   amp = new Amplitude(this);
   amp.input(input);
-  println("DONE!!");
-  println(amp.analyze());
-  //bd = new BeatDetector(this);
-  //bd.input(sf);
-  //bd.sensitivity(300);
+  //println("DONE!!");
+  //println(amp.analyze());
+  bd = new BeatDetector(this);
+  bd.input(input);
+  bd.sensitivity(500);
 
   w1 = new ExpSine(height/6, 50, freq, amplitude*2);
   w2 = new ExpSine(height/6*2, 50, freq*2, amplitude);
@@ -199,23 +196,14 @@ void setup() {
 }
 
 void draw() {
-  //ampValue = amp.analyze();
   background(0);
-  //ball.setA(amp.analyze()*200);
-  //if (ampValue>0.7) t0=millis();
-  //if (bd.isBeat()) t0=millis();
-  //println("AMP");
-  //println(amp.analyze());
+  if (bd.isBeat()) t0=millis();
 
 
   //osc part
   sendBPM();
   update();
   setScale();
-  //println("ampanalize");
-  //println(amp.analyze());
-  //if (mainWindow) drawMainWindow();
-  //else drawSensorWindow();
 
   if (mouseY>(height-height/8) || barVisible.getBooleanValue()) {
     barVisible.show();
@@ -248,7 +236,7 @@ void mousePressed() {
 }
 
 void drawMainWindow() {
-  if (frameCount%90 == 0) t0=millis();
+  //if (frameCount%90 == 0) t0=millis();
   ampValue = amp.analyze();
   hint(ENABLE_DEPTH_TEST);
   pushMatrix();
@@ -282,7 +270,8 @@ void drawMainWindow() {
   popMatrix();
   translate(width/2, height/2, 0);
 
-  ball.setColor(color(frameCount%255, 255, 255));
+  ball.setColor(color(frameCount%255, 255, map(channelVolumes[4],0,1.5,0,255)));
+  println("master Vol: " + channelVolumes[4]);
   ball.drawBall(ampValue);
   time2=millis();
   popMatrix();

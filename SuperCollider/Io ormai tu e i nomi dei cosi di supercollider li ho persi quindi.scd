@@ -25,7 +25,7 @@ Server.default.options.outDevice_("Dispositivo combinato");
 )
 (
 s.reboot;
-v = Volume.new(s,0,2);
+v = Volume.new(s,0,4);
 )
 
 (
@@ -243,8 +243,8 @@ SynthDef("juno2", {arg freq = 440, amp = 1, gate = 1, out=0, unison=1, cutoff=20
 
 	sig = 2*(1-mod)*mix + mod*chorus;
 
-	Out.ar(0, FreeVerb.ar(HPF.ar(sig*amp,200),0.3));
-	Out.ar(2, FreeVerb.ar(HPF.ar(sig*amp,200),0.3));
+	Out.ar(0, FreeVerb.ar(HPF.ar(sig*amp,200)*5,0.3));
+	Out.ar(2, FreeVerb.ar(HPF.ar(sig*amp,200)*5,0.3));
 }).add;
 
 SynthDef("juno3", {arg freq = 440, amp = 1, gate = 1, out=0, unison=1, cutoff=200, rq=1, delay=0.2, mod=0;

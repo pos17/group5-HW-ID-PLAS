@@ -195,25 +195,25 @@ void setAccMag(float x, float y, float z) {
     accMag += accMagList.get(i);
   }
   accMag /= accMagList.size();
-  accData = -map(pow(accMag, 2), 0, pow(40, 2), 0, sens2.getHeight());
-  if (accMag>10 && accMag<15) {
-    ball.setSpeed(1);
+  accData = -map(pow(accMag, 2), 0, pow(22, 2), 0, sens2.getHeight());
+  if (accMag>10 && accMag<12) {
+    //ball.setSpeed(1);
     valueToSend = 0.0;
     //println(accMag);
-  } else if (accMag>=15 && accMag<20) {
-    ball.setSpeed(2);
+  } else if (accMag>=12 && accMag<14) {
+    //ball.setSpeed(2);
     valueToSend = 1.0;
     //println(accMag);
-  } else if (accMag>=20 && accMag<25) {
-    ball.setSpeed(3);
+  } else if (accMag>=14 && accMag<16) {
+    //ball.setSpeed(3);
     valueToSend = 2.0;
     //println(accMag);
-  } else if (accMag>=25) {
-    ball.setSpeed(4);
+  } else if (accMag>=16) {
+    //ball.setSpeed(4);
     valueToSend = 3.0;
     //println(accMag);
   } else {
-    ball.setSpeed(0);
+    //ball.setSpeed(0);
     valueToSend = 5.0;
     //println(accMag);
   }
@@ -233,13 +233,14 @@ void setAccMag(float x, float y, float z) {
 void update() {
   if (millis()-shakeResetTime>shakeResetDelay) {
     int value = 0;
-    if (shakesIter <=1) {
+    if (shakesIter <=1 ) {
       value = 0;
-    } else if (shakesIter <=6) {
+    } else if (shakesIter <=2) {
       value = 1;
     } else {
       value = 2;
     }
+    ball.setSpeed(value);
     OscMessage myMessage = new OscMessage("/processing/SCControls/DrumVelocity");
     myMessage.add(value);
     // send the message

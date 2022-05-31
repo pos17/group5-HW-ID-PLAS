@@ -78,6 +78,7 @@ class myLine {
         );
     }
   }
+  
   void changeRadius(float radius) {
     for (int i=0; i<prevX.size(); i++) {
       PVector pv = new PVector(prevX.get(i), prevY.get(i), prevZ.get(i));

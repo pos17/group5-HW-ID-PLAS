@@ -13,18 +13,18 @@ void drawSensorWindow() {
   //sens1.update(sin(radians(frameCount))*50);
   //sens2.update(sin(radians(10*frameCount))*30);
   //sens3.update(sin(radians(20*frameCount))*40);
-  
-  if(millis()-shakeValResetTime > shakeValResetDelay) {
+
+  if (millis()-shakeValResetTime > shakeValResetDelay) {
     shakeValue = 0;
     shakeValResetTime = millis();
   }
-  
+
   sens1.update(shakeValue);
   sens2.update(accData);
   sens3.update(gyrData);
-  
+
   pushMatrix();
-  translate(width-width/6, height/2);  
+  translate(width-width/6, height/2);
   noStroke();
   for (int i=0; i<400; i++) {
     float wx = map(sin(radians(0.2*frameCount+i*5)), -1, 1, -width/6, width/6);
@@ -38,6 +38,7 @@ void drawSensorWindow() {
   }
   pushMatrix();
   ball.setA0(width/14);
+  ball.setColor(color(frameCount%255, 255, map(channelVolumes[4], 0, 1.5, 0, 255)));
   ball.drawBall(0);
   popMatrix();
   popMatrix();

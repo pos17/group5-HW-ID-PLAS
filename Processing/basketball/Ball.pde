@@ -32,7 +32,7 @@ class Ball {
     //setA(a0+5*sin(c));
     //a = a0;
     //b = b0;
-    setA(a0+50*ampValue);
+    setA(a0+100*ampValue);
     elipse.changeRadius(a+b);
     hor.changeRadius(a+b);
     vert.changeRadius(a+b);
@@ -74,9 +74,9 @@ class Ball {
   }
 
   void setSpeed(int speed) {
-    if (speed==1) angleIncrement = 0.7;
-    if (speed==2) angleIncrement = 1.4;
-    if (speed==3) angleIncrement = 2.1;
+    if (speed==0) angleIncrement = 0.7;
+    if (speed==1) angleIncrement = 1.4;
+    if (speed==2) angleIncrement = 2.1;
   }
   
   void setColor(color aColor){

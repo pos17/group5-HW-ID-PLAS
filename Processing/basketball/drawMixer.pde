@@ -80,7 +80,6 @@ void setupMixer() {
       .setFont(createFont("Arial", 30))
       .align(ControlP5.CENTER, ControlP5.CENTER);
   }
-
 }
 
 
@@ -101,13 +100,14 @@ void drawMixer() {
   }
   popMatrix();
 
-  
-  
+
+
   //masterSli.setValue(0.5);
 
   pushMatrix();
   translate(width-width/6, height/2);
   ball.setA0(100);
+  ball.setColor(color(frameCount%255, 255, map(channelVolumes[4], 0, 1.5, 0, 255)));
   ball.drawBall(map(sin(radians(frameCount)), -1, 1, 0, 0.5));
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
@@ -225,17 +225,17 @@ class Fader {
     double val = constrain(theVal, 0.0001, 1.5);
     volumes[id] = (float)val;
     //println("val: "+val);
-    
+
     double vol1 = 20*Math.log10(val);
     //println("vol_1: "+vol1);
-    
+
     float vol = (float)vol1;
     vol = pow(10, vol/20);
     //println("vol_2: "+vol);
-    
+
     float faderVal = map(vol, 0, 1.5, 0, 3);
     //println("faderVal: "+faderVal  );
-    
+
     fader.setValue(faderVal);
   };
 
@@ -243,18 +243,18 @@ class Fader {
     volumes[id] = pow(10, getVolume()/20);
     float xcenter = fader.getPosition()[0]+fader.getWidth()/2;
     String volume = String.valueOf(getVolume());
-  
-    if(fader.isVisible()){
-    // Name Label
-    textAlign(CENTER);
-    //textFont(arial);
-    fill(255);
-    textSize(30);
-    text(name, xcenter, fader.getPosition()[1]-labelPaddingY);
 
-    // Value label
-    textSize(20);
-    text(volume + " dB", xcenter, fader.getPosition()[1]+fader.getHeight()+30);
+    if (fader.isVisible()) {
+      // Name Label
+      textAlign(CENTER);
+      //textFont(arial);
+      fill(255);
+      textSize(30);
+      text(name, xcenter, fader.getPosition()[1]-labelPaddingY);
+
+      // Value label
+      textSize(20);
+      text(volume + " dB", xcenter, fader.getPosition()[1]+fader.getHeight()+30);
     }
     setVolume();
   }
