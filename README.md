@@ -21,7 +21,6 @@ A complete description of the development of the system can be found in the [rep
 
 ## Getting Started
 
-<!--  vale la pena specificare il testing solo su MAC? -->
 
 In order to start the system on your own Computer:
 
