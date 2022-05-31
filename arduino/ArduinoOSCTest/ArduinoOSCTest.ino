@@ -27,16 +27,16 @@
 WiFiUDP Udp;                 // instance of UDP library
 
 //DEFINING PINS WITH USER-FRIENDLY NAMES
-const int potPin = A4;
-const int shakePin = A3;
-const int heartPin =  A1;
+const int potPin = A1;
+const int shakePin = A0;
+const int heartPin = A5;
 //const int switchPin1 = 2;
 //const int switchPin2 = 3;
 
 // LEDs must be connected to arduino PWM pins - see board pinout
-#define RED  3   // pin that red led is connected to    
-#define GREEN  4 // pin that green led is connected to     
-#define BLUE  5  // pin that blue led is connected to  
+#define RED     3   // pin that red led is connected to    
+#define GREEN   4   // pin that green led is connected to     
+#define BLUE    5   // pin that blue led is connected to  
 
 
 //value of shake
@@ -56,7 +56,7 @@ unsigned long hsSendOSCTime = millis();
 const int HS_SEND_OSC_DELAY = 500;
 
 
-const int VOLDELAY = 3;
+const int VOLDELAY = 50;
 unsigned long volTime = millis();
 
 //volume
@@ -73,62 +73,62 @@ void readyFeedback() {
   const int BLDL = 200;
   // when connected to net the system gives feedback blinking led GREEN RED BLUE AND THREE GREEN
   WiFiDrv::analogWrite(25, 255);
-  digitalWrite(RED, 0);
+  analogWrite(RED, 0);
   WiFiDrv::analogWrite(26, 0);
-  digitalWrite(GREEN, 1);
+  analogWrite(GREEN, 255);
   WiFiDrv::analogWrite(27, 0);
-  digitalWrite(BLUE, 1);
+  analogWrite(BLUE, 255);
   delay(BLDL);
   WiFiDrv::analogWrite(25, 0);
-  digitalWrite(RED, 1);
+  analogWrite(RED, 255);
   WiFiDrv::analogWrite(26, 0);
-  digitalWrite(GREEN, 1);
+  analogWrite(GREEN, 255);
   WiFiDrv::analogWrite(27, 0);
-  digitalWrite(BLUE, 1);
+  analogWrite(BLUE, 255);
   delay(BLDL);
   WiFiDrv::analogWrite(25, 0);
-  digitalWrite(RED, 1);
+  analogWrite(RED, 255);
   WiFiDrv::analogWrite(26, 255);
-  digitalWrite(GREEN, 0);
+  analogWrite(GREEN, 0);
   WiFiDrv::analogWrite(27, 0);
-  digitalWrite(BLUE, 1);
+  analogWrite(BLUE, 255);
   delay(BLDL);
   WiFiDrv::analogWrite(25, 0);
-  digitalWrite(RED, 1);
+  analogWrite(RED, 255);
   WiFiDrv::analogWrite(26, 0);
-  digitalWrite(GREEN, 1);
+  analogWrite(GREEN, 255);
   WiFiDrv::analogWrite(27, 0);
-  digitalWrite(BLUE, 1);
+  analogWrite(BLUE, 255);
   delay(BLDL);
   WiFiDrv::analogWrite(25, 0);
-  digitalWrite(RED, 1);
+  analogWrite(RED, 255);
   WiFiDrv::analogWrite(26, 0);
-  digitalWrite(GREEN, 1);
+  analogWrite(GREEN, 255);
   WiFiDrv::analogWrite(27, 255);
-  digitalWrite(BLUE, 0);
+  analogWrite(BLUE, 0);
   delay(BLDL);
   WiFiDrv::analogWrite(25, 0);
-  digitalWrite(RED, 1);
+  analogWrite(RED, 255);
   WiFiDrv::analogWrite(26, 0);
-  digitalWrite(GREEN, 1);
+  analogWrite(GREEN, 255);
   WiFiDrv::analogWrite(27, 0);
-  digitalWrite(BLUE, 1);
+  analogWrite(BLUE, 255);
   delay(BLDL);
 
   for (int i = 0; i < 3; ++i) {
     WiFiDrv::analogWrite(25, 0);
-    digitalWrite(RED, 1);
+    analogWrite(RED, 255);
     WiFiDrv::analogWrite(26, 255);
-    digitalWrite(GREEN, 0);
+    analogWrite(GREEN, 0);
     WiFiDrv::analogWrite(27, 0);
-    digitalWrite(BLUE, 1);
+    analogWrite(BLUE, 255);
     delay(BLDL);
     WiFiDrv::analogWrite(25, 0);
-    digitalWrite(RED, 1);
+    analogWrite(RED, 255);
     WiFiDrv::analogWrite(26, 0);
-    digitalWrite(GREEN, 1);
+    analogWrite(GREEN, 255);
     WiFiDrv::analogWrite(27, 0);
-    digitalWrite(BLUE, 1);
+    analogWrite(BLUE, 255);
     delay(BLDL);
 
   }
@@ -137,7 +137,6 @@ void readyFeedback() {
 void setup() {
 
   //PINMODE SETUP FOR EMBEDDED LED ON THE ARDUINO
-
   WiFiDrv::pinMode(25, OUTPUT); //define green pin
   WiFiDrv::pinMode(26, OUTPUT); //define red pin
   WiFiDrv::pinMode(27, OUTPUT); //define blue pin
@@ -164,19 +163,20 @@ void setup() {
     SerialUSB.println (SECRET_SSID);           // print the network name (SSID)
     WiFi.begin(SECRET_SSID, SECRET_PASS);  // try to connect
     WiFiDrv::analogWrite(25, 255);
-    digitalWrite(RED, 0);
+    analogWrite(RED, 0);
     WiFiDrv::analogWrite(26, 0);
-    digitalWrite(GREEN, 1);
+    analogWrite(GREEN, 255);
     WiFiDrv::analogWrite(27, 255);
-    digitalWrite(BLUE, 0);
+    analogWrite(BLUE, 0);
     delay(1000);
     WiFiDrv::analogWrite(25, 0);
-    digitalWrite(RED, 1);
+    analogWrite(RED, 255);
     WiFiDrv::analogWrite(26, 0);
-    digitalWrite(GREEN, 1);
+    analogWrite(GREEN, 255);
     WiFiDrv::analogWrite(27, 0);
-    digitalWrite(BLUE, 1);
+    analogWrite(BLUE, 255);
     delay(1000);
+
   }
 
   // When you're connected, print out the device's network status:
@@ -186,12 +186,8 @@ void setup() {
   Udp.begin(remotePort);
   // when connected to net the system gives feedback blinking led GREEN RED BLUE AND THREE GREEN
   readyFeedback();
-  WiFiDrv::analogWrite(25, 0);
-  digitalWrite(RED, 1);
-  WiFiDrv::analogWrite(26, 255);
-  digitalWrite(GREEN, 0);
-  WiFiDrv::analogWrite(27, 0);
-  digitalWrite(BLUE, 1);
+
+  
 }
 
 void loop() {
@@ -199,6 +195,7 @@ void loop() {
   checkShakeInput();
   checkBloodPressure();
   setVolume();
+  
   
   /*
     if(digitalRead(switchPin1)) {
@@ -320,8 +317,9 @@ void setVolume() {
   volumeVal = analogRead(potPin);
   if (millis() - volTime > VOLDELAY) {
     if (volumeVal != volumeValHistory) {
+      if(volumeVal <10) volumeVal = 0;
       float volToSend = 0;
-      volToSend = volumeVal /1023;
+      volToSend = volumeVal / 512;
       OSCMessage msg("/arduino/volume/val");
       SerialUSB.println("VOL SET");
       SerialUSB.println(volToSend);
@@ -332,6 +330,22 @@ void setVolume() {
       msg.empty(); // free space occupied by message
       volTime = millis();
       volumeValHistory = volumeVal;
+      setLedVal(volumeVal);
+      
     }
   }
+}
+
+//Setting led value, input from 0 - 1023
+void setLedVal(int ledIn) {
+  int ledToPut = (255*ledIn)/1023;
+  int outLedToPut = 255-ledToPut;
+  if(outLedToPut<0) outLedToPut = 0;
+  if(outLedToPut>255) outLedToPut = 255;
+  WiFiDrv::analogWrite(25, 0);
+  analogWrite(RED, 255);
+  WiFiDrv::analogWrite(26, ledToPut);
+  analogWrite(GREEN, outLedToPut);
+  WiFiDrv::analogWrite(27, 0);
+  analogWrite(BLUE, 255);
 }

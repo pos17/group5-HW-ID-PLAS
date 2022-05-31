@@ -232,7 +232,7 @@ class Fader {
     // Value label
     textSize(20);
     text(volume + " dB", xcenter, fader.getPosition()[1]+fader.getHeight()+30);
-    setVolume();
+    //setVolume();
   }
 
   void show() {
