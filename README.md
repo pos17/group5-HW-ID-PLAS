@@ -33,32 +33,32 @@ In order to start the system on your own Computer:
 2. Download and install [Processing](https://processing.org/).
 3. Download and install [Arduino](https://www.arduino.cc/).
 4. Clone the repo.
-5. Open the file basketball.pde inside the folder *Processing* 
+5. Open the file basketball.pde inside the folder *Processing*.
 6. Make sure to have the following libraries installed (in Sketch > Import Libraries > Manage Libraries):
    -  ControlP5 
    -  Sound
    -  OSCP5
    -  Supercollider
-7. Run the file clicking on the *PLAY BUTTON*, (MACOS: cmd+R, Windows: ctrl+R)
-8. Open the file basketball.scd inside the folder *SuperCollider*
-9.  In the .scd file run the main code section (MACOS: cmd+enter, Windows: ctrl+enter)
+7. Run the file clicking on the *PLAY BUTTON*, (MACOS: cmd+R, Windows: ctrl+R).
+8. Open the file basketball.scd inside the folder *SuperCollider*.
+9. In the .scd file run the main code section (MACOS: cmd+enter, Windows: ctrl+enter).
 10. Install the [Multisense OSC](https://play.google.com/store/apps/details?id=edu.polytechnique.multisense.release&hl=en_US&gl=US) application on a smartphone device. 
-11.  
+11. Find a basketball player.
 
 
 
 ## Usage
 
 1. Start the Multisense App on the Smartphone and set the correct IP address and port for the PC used as central device.
-2. Position the shake sensor connected to the arduino on the dominant hand used by the player and Turn the Arduino on.  
+2. Position the shake sensor connected to the arduino on the dominant hand used by the player and turn the Arduino on.  
 3. Launch Supercollider and Processing scripts. 
 4. ENJOY!!
 
 ## Processing GUI
 
-The Processing allows the user control some parameters of the CMS in order to manipulate its behaviour.
+Processing allows the user control some parameters of the CMS in order to manipulate its behaviour.
 In particular the available parameters are: 
-1. TEMPO: used to speed-up or slow-down 
+1. TEMPO: used to speed-up or slow-down the music.
 2. ROOT NOTE: used to select the tonality of the generated music.
 
 ![](./gitAssets/mainwindow.jpg)
@@ -72,11 +72,11 @@ Choosing the "sensors" button allows to open the page where the values of the se
 ![](./gitAssets/senswindow.jpg)
 
 ## ARDUINO 
-The Arduino device is used to both transmit the data acquired by the shake sensor and to control the volume of the system 
+The Arduino device is used to both transmit the data acquired by the shake sensor and to control the volume of the system. 
 
 ![](./gitAssets/ARDUINO.jpg)
 
-After some tests the best position used to mount the system resulted to be the one showed in the picture below.
+After some tests the best position used to mount the system turned out to be the one showed in the picture below.
 
 
 ![](./gitAssets/guardaComeSonoFigo.jpg)
@@ -86,8 +86,8 @@ After some tests the best position used to mount the system resulted to be the o
 The repository contains 4 principal folders:
 * "arduino" containing the Source code for arduino.
 * "Processing" containing the Source code for GUI.
-* "SuperCollider" containing the computer Music Engine.
-* "gitAssets" contains the images used in the report and in the README.
+* "SuperCollider" containing the Computer Music Engine.
+* "gitAssets" containing the images used in the report and in the README.
 
 
 ## Notes
