@@ -2,6 +2,9 @@
 
  <em>Group 5 PLAS</em>
 
+
+![](./gitAssets/image_2022-05-31_23-11-44.png)
+
 - [**BOUNCER**](#bouncer)
   - [Project Description](#project-description)
   - [Getting Started](#getting-started)
