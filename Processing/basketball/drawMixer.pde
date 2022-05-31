@@ -108,7 +108,7 @@ void drawMixer() {
   translate(width-width/6, height/2);
   ball.setA0(100);
   ball.setColor(color(frameCount%255, 255, map(channelVolumes[4], 0, 1.5, 0, 255)));
-  ball.drawBall(map(sin(radians(frameCount)), -1, 1, 0, 0.5));
+  ball.drawBall(map(sin(radians(frameCount)), -1, 1, 0, 0.3));
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
 

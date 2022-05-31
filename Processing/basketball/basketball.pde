@@ -21,7 +21,7 @@ float freq = 0.2;
 int amplitude =20, numLines=80, speedBall=1, randomness=0;
 int hueBall = 150;
 float t0=0;
-int bpm0 = 100, bpm, bpmHistory;
+int bpm0 = 120, bpm, bpmHistory;
 String whatScale;
 float ampValue = 1;
 
@@ -123,8 +123,12 @@ void setup() {
     .setColorBackground(backgroundColor)
     ;
   bpmSlider.getCaptionLabel()
+    .setFont(createFont("Arial", 15))
     .align(ControlP5.RIGHT, ControlP5.BOTTOM)
     .setPadding(10, 10);
+  bpmSlider.getValueLabel()
+    .setFont(createFont("Arial", 15))
+    ;
 
   // SCROLLABLE LIST
   List scales = Arrays.asList("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B");
@@ -134,7 +138,7 @@ void setup() {
     .setSize(width/9*2, height/8)
     .setItemHeight(height/8/3)
     .addItems(scales)
-    .setValue(0)
+    .setValue(1)
     .setType(0)
     .setOpen(true)
     .hide()
@@ -270,7 +274,7 @@ void drawMainWindow() {
   popMatrix();
   translate(width/2, height/2, 0);
 
-  ball.setColor(color(frameCount%255, 255, map(channelVolumes[4],0,1.5,0,255)));
+  ball.setColor(color(frameCount%255, 255, map(channelVolumes[4], 0, 1.5, 0, 255)));
   println("master Vol: " + channelVolumes[4]);
   ball.drawBall(ampValue);
   time2=millis();
