@@ -21,17 +21,25 @@ A complete description of the development of the system can be found in the [rep
 
 ## Getting Started
 
-In order to build the plugin on your own Computer:
+<!--  vale la pena specificare il testing solo su MAC? -->
+
+In order to start the system on your own Computer:
 
 
 
-1. Download the [Juce source code](https://juce.com/get-juce)
-2. Clone this repo
-3. Open ADHD.jucer 
-4. Launch your IDE from Projucer
-5. Build the plugin in the IDE
-6. Import it in the plugins folder of your DAW
-7. TRY IT!! 
+1. Download and install [SuperCollider](https://supercollider.github.io/).
+2. Download and install [Processing](https://processing.org/).
+3. Download and install [Arduino](https://www.arduino.cc/).
+4. Clone the repo.
+5. Open the file basketball.pde inside the folder *Processing* 
+6. Make sure to have the following libraries installed (in Sketch > Import Libraries > Manage Libraries):
+   -  ControlP5 
+   -  Sound
+   -  OSCP5
+   -  Supercollider
+7. Open the file basketball.scd inside the folder *SuperCollider*
+8. In the .scd file run (cmd+enter) the first four section 
+9.  ENJOY!! 
 
 
 
