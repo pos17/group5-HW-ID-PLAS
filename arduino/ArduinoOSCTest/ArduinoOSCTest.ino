@@ -27,8 +27,8 @@
 WiFiUDP Udp;                 // instance of UDP library
 
 //DEFINING PINS WITH USER-FRIENDLY NAMES
-const int potPin = A1;
-const int shakePin = A0;
+const int potPin = A0;
+const int shakePin = A1;
 const int heartPin = A5;
 //const int switchPin1 = 2;
 //const int switchPin2 = 3;
@@ -343,9 +343,9 @@ void setLedVal(int ledIn) {
   if(outLedToPut<0) outLedToPut = 0;
   if(outLedToPut>255) outLedToPut = 255;
   WiFiDrv::analogWrite(25, 0);
-  analogWrite(RED, 255);
+  digitalWrite(RED, 1);
   WiFiDrv::analogWrite(26, ledToPut);
   analogWrite(GREEN, outLedToPut);
   WiFiDrv::analogWrite(27, 0);
-  analogWrite(BLUE, 255);
+  digitalWrite(BLUE, 1);
 }

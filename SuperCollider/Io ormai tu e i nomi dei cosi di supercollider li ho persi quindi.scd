@@ -29,7 +29,7 @@ v = Volume.new(s,0,2);
 )
 
 (
-v.volume = -10;
+v.volume = -1;
 
 ~scale = 13;
 ~patterns = [

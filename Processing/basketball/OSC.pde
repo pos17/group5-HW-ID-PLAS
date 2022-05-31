@@ -165,7 +165,7 @@ void oscEvent(OscMessage theOscMessage) {
       //println(firstValue);
       mainVolume = firstValue;
       channelVolumes[4] = mainVolume;
-      setVolume();
+      //setVolume();
       return;
     }
   }
@@ -185,19 +185,19 @@ void setAccMag(float x, float y, float z) {
     accMag += accMagList.get(i);
   }
   accMag /= accMagList.size();
-  if (accMag>10 && accMag<18) {
+  if (accMag>10 && accMag<15) {
     ball.setSpeed(1);
     valueToSend = 0.0;
     println(accMag);
-  } else if (accMag>=18 && accMag<25) {
+  } else if (accMag>=15 && accMag<20) {
     ball.setSpeed(2);
     valueToSend = 1.0;
     println(accMag);
-  } else if (accMag>=23 && accMag<30) {
+  } else if (accMag>=20 && accMag<25) {
     ball.setSpeed(3);
     valueToSend = 2.0;
     println(accMag);
-  } else if (accMag>=30) {
+  } else if (accMag>=25) {
     ball.setSpeed(4);
     valueToSend = 3.0;
     println(accMag);
